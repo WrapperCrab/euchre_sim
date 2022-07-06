@@ -38,7 +38,7 @@ class Player1(Player):#!!!Does not account for jacks changing suit
             for card in self.game.hand_for(self):
                 if card[1] == top_card[1]:
                     numMatch++
-            if numMatch >= 2:
+        	if numMatch >= 2:
                 return True
             return False
         else:#there is no top_card
