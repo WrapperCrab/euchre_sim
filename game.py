@@ -3,13 +3,14 @@ import utils
 
 SUITS = ['s', 'h', 'd', 'c']
 VALUES = ['9','T','J','Q','K','A']
-neededScore = 6#score needed to win the game
+neededScore = 1
+	#value of 1 guarantees only 1 trick is played
 
 class Game:
 
 	def __init__(self, players):
 		if len(players) != 4:
-			raise IllegalPlayException("Game only supports 5 players")
+			raise IllegalPlayException("Game only supports 5 players")#Don't understand this error
 		self._players = players
 
 		# set positions and teams

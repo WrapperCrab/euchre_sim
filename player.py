@@ -13,7 +13,7 @@ class Player:
 
 		"""
 		card_to_play = None
-		for card in self.game.hand_for(self):
+		for card in self.game.hand_for(self):#!!!I don't think this for loop makes much sense here
 			if not trick:#I think, this is saying if we are first
 				card_to_play = self.game.hand_for(self)[0]#first card in hand
 			elif trick[0][1] == card[1]:#card[1] is the suit of the play we are considering.
