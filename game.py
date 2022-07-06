@@ -3,6 +3,7 @@ import utils
 
 SUITS = ['s', 'h', 'd', 'c']
 VALUES = ['9','T','J','Q','K','A']
+neededScore = 6#score needed to win the game
 
 class Game:
 
@@ -40,7 +41,7 @@ class Game:
 		self._dealer = None
 
 	def play_game(self):
-		while (self._game_score[1] < 10 and self._game_score[2] < 10):
+		while (self._game_score[1] < neededScore and self._game_score[2] < neededScore):
 			self.play_hand()
 			print "===============> SCORE:", self._game_score
 
@@ -123,7 +124,7 @@ class Game:
 				if discard not in self._hands[self._dealer]:
 					raise IllegalPlayException("Dealer must discard card that was in hand")
 				self._hands[self._dealer].remove(discard) # Game
-				
+
 				self._trump = self._top_card[1]
 
 				if call_result == "alone":
