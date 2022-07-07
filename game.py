@@ -67,14 +67,16 @@ class Game:
 			for p in self._players:
 				card = p.action(trick)
 				if p not in self._inactives:
-					if len(trick) > 0 and p.has_suit(trick[0][1]) and card[1] != trick[0][1]:
+					if len(trick) > 0 and p.has_suit(utils.getCardSuit(trick[0],self._trump), self._trump) and (utils.getCardSuit(trick[0],self._trump)!=utils.getCardSuit(card,self._trump)):
+						print(trick)#!!!This is before the card is added to the trick
+						print(card)
 						raise IllegalPlayException("Must play the lead suit if you've got it")
 					if card not in self._hands[p]:
 						raise IllegalPlayException("Player doesn't have that card to play")
 					trick.append(card)
 					self._hands[p].remove(card) # Game
 
-			winning_card = utils.best_card(trick, self._trump, trick[0])
+			winning_card = utils.best_card(trick, self._trump, utils.getCardSuit(trick[0],self._trump))
 			winning_player = self._players[trick.index(winning_card)]
 			self._tricks_score[self._teams[winning_player]] += 1
 			self._rotate_until(winning_player)
@@ -162,9 +164,9 @@ class Game:
 		non_calling_team = (calling_team % 2) + 1
 		if self._tricks_score[calling_team] > self._tricks_score[non_calling_team]:
 			if self._tricks_score[calling_team] == 5:
-				team_players = [p for p in self._players if self._teams[p] == calling_team]
-				went_alone = reduce(lambda x, y: x not in self._inactives or y not in self._inactives, team_players)
-				if went_alone:
+				if (self._players[calling_team-1] in self._inactives) | (self._players[calling_team+1] in self._inactives):#The winning team went alone!
+					#This piece of the code was beyond fucked when I first got to it
+					print("this should not have happened")
 					self._game_score[calling_team] += 4
 				else:
 					self._game_score[calling_team] += 2

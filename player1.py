@@ -14,19 +14,17 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 		if not trick:#we are first
 			#find highest card overall
 			card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit, None)
-			#!!!I don't know if this function works without specifying led suit
 		else:#we are not first
-			ledSuit = trick[0][1]
+			ledSuit = utils.getCardSuit(trick[0],trumpSuit)
 			ledSuitCards = []
 			for card in self.game.hand_for(self):
-				if card[1] == ledSuit:
+				if utils.getCardSuit(card,trumpSuit) == ledSuit:
 					ledSuitCards.append(card) #add this card
 
 			if len(ledSuitCards)==0:
 				card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit, ledSuit)
 			else:
 				card_to_play = utils.best_card(ledSuitCards, trumpSuit, ledSuit)
-
 		return card_to_play
 
 
@@ -36,7 +34,7 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 		if top_card!=None:
 			numMatch = 0
 			for card in self.game.hand_for(self):
-				if card[1] == top_card[1]:
+				if utils.getCardSuit(card,top_card[1]) == top_card[1]:
 					numMatch+=1
 			if numMatch >= 2:
 				return True
@@ -47,13 +45,13 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 			cCount = 0
 			dCount = 0
 			for card in self.game.hand_for(self):
-				if card[1]=="h":
+				if utils.getCardSuit(card,'h')=="h":
 					hCount+=1
-				elif card[1]=="s":
+				if utils.getCardSuit(card,'s')=="s":
 					sCount+=1
-				elif card[1]=="c":
+				if utils.getCardSuit(card,'c')=="c":
 					cCount+=1
-				elif card[1]=="d":
+				if utils.getCardSuit(card,'d')=="d":
 					dCount+=1
 				else:
 					print("Well shit")
@@ -74,7 +72,7 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 	def discard(self):
 		""" Choose card to discard after picking up	"""
 		for card in self.game.hand_for(self):
-			if card[1]!=self.game.trump:
+			if utils.getCardSuit(card,self.game.trump)!=self.game.trump:
 				return card
 		return self.game.hand_for(self)[0]#we have only trump
 

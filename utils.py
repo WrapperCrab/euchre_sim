@@ -16,7 +16,7 @@ def best_card(cards, trump=None, lead=None):
 				val += 40
 			else:#This is normal trump
 				val += 20
-		elif trump == same_color(c[1]) & c[0] == 'J':#this is the left
+		elif (trump == same_color(c[1])) & (c[0] == 'J'):#this is the left
 			val +=30
 		else:#This is not trump
 			if lead == c[1]:#This is lead
@@ -60,3 +60,10 @@ def same_color(suit):
 # print best_card(['Jc', 'Js', 'Jh'], 'h', 's')
 # print best_card(['Jc', 'Js', 'Jh', 'Jd'], 'h', 's')
 # print best_card(['Jc', 'Js', 'Ah', 'Jd'], 'h', 's')
+
+def getCardSuit(card, trump):#I wrote this
+	"""return the true suit of the card"""
+	if (card[0]=='J') & (card[1]==same_color(trump)):
+		return trump#This is the left
+	else:
+		return card[1]

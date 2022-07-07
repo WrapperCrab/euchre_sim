@@ -6,21 +6,30 @@ class Player:
 		self.name = name
 		self.game = None
 
-	def action(self, trick):
+	def action(self, trick):#The original function didn't know that the left changes suit. Pathetic.
 		""" Play a card in trick
 
 		trick -- list of cards played in order, trick[0] is lead card
 
 		"""
-		card_to_play = None
-		for card in self.game.hand_for(self):#!!!I don't think this for loop makes much sense here
-			if not trick:#I think, this is saying if we are first
-				card_to_play = self.game.hand_for(self)[0]#first card in hand
-			elif trick[0][1] == card[1]:#card[1] is the suit of the play we are considering.
-				card_to_play = card# If it is the same, play it
-		if not card_to_play:#if card_to_play is not decided yet, AKA if we are not first and don't have the suit of the lead card
-			card_to_play = self.game.hand_for(self)[0]#first card in hand
-		return card_to_play
+		if not trick:#if we are first
+			return self.game.hand_for(self)[0]#first card in hand
+		else:#We are not first, there is a lead suit
+			for card in self.game.hand_for(self):
+				if (utils.getCardSuit(card,self.game.trump) == utils.getCardSuit(trick[0],self.game.trump)):
+					#this is the same suit as the lead suit
+					return card
+			#We only get here if we have no lead suit
+			return self.game.hand_for(self)[0]
+
+		# for card in self.game.hand_for(self):#!!!I don't think this for loop makes much sense here
+		# 	if not trick:#I think, this is saying if we are first
+		# 		card_to_play = self.game.hand_for(self)[0]#first card in hand
+		# 	elif trick[0][1] == card[1]:#card[1] is the suit of the play we are considering.
+		# 		card_to_play = card# If it is the same, play it
+		# if not card_to_play:#if card_to_play is not decided yet, AKA if we are not first and don't have the suit of the lead card
+		# 	card_to_play = self.game.hand_for(self)[0]#first card in hand
+		# return card_to_play
 
 	def call(self, top_card):
 		""" Call trump or pass
@@ -35,7 +44,7 @@ class Player:
 			False - pass
 			*** note if player is dealer (position == 3), player can't pass
 
-		"""#!!!You shouldn't be able to call the turned down suit. That is very against the rules
+		"""
 		return True#always call (lol)
 
 	def discard(self):
@@ -65,7 +74,10 @@ class Player:
 		"""
 		pass
 
-	def has_suit(self, suit):
+	def has_suit(self, suit, trump):#the original function did not consider the left. I'm sensing a pattern
 		""" Return True if player has specified suit in hand, otherwise false """
-		return suit in [card[1] for card in self.game.hand_for(self)]
+		for card in self.game.hand_for(self):
+			if utils.getCardSuit(card,trump)==suit:
+				return True
+		return False
 			#card[1], the second attribute of card, is the suit
