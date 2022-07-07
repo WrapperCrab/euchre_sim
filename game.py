@@ -48,6 +48,11 @@ class Game:
 
 		print "GAME OVER!"
 
+		#In order to keep track of who's won and lost
+		if self._game_score[1]>=neededScore:
+			return 1
+		return 0
+
 	def play_hand(self):
 		# dealer is the "last" player in order
 		self._dealer = self._players[3]
