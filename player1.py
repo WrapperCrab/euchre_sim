@@ -9,52 +9,52 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 	def action(self, trick):
 		""" Play a card in trick """
 		card_to_play = None
-        trumpSuit = self.game.trump
+		trumpSuit = self.game.trump
 
-        if not trick:#we are first
-            #find highest card overall
-            card_to_play = best_card(self.game.hand_for(self), trumpSuit)
-            #!!!I don't know if this function works without specifying led suit
-        else:#we are not first
-            ledSuit = trick[0][1]
-            ledSuitCards = []
-            for card in self.game.hand_for(self):
-                if card[1] == ledSuit:
-                    ledSuitCards.append(card) #add this card
+		if not trick:#we are first
+			#find highest card overall
+			card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit)
+			#!!!I don't know if this function works without specifying led suit
+		else:#we are not first
+			ledSuit = trick[0][1]
+			ledSuitCards = []
+			for card in self.game.hand_for(self):
+				if card[1] == ledSuit:
+					ledSuitCards.append(card) #add this card
 
-            if len(ledSuitCards)==0:
-                card_to_play = best_card(self.game.hand_for(self), trumpSuit)
-            else:
-                card_to_play = best_card(ledSuitCards, trumpSuit, ledSuit)
+			if len(ledSuitCards)==0:
+				card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit)
+			else:
+				card_to_play = utils.best_card(ledSuitCards, trumpSuit, ledSuit)
 
-        return card_to_play
+		return card_to_play
 
 
 	def call(self, top_card):
 		""" Call trump or pass """
 
-        if top_card!=None:
-    		numMatch = 0
-            for card in self.game.hand_for(self):
-                if card[1] == top_card[1]:
-                    numMatch++
-        	if numMatch >= 2:
-                return True
-            return False
-        else:#there is no top_card
+		if top_card!=None:
+			numMatch = 0
+			for card in self.game.hand_for(self):
+				if card[1] == top_card[1]:
+					numMatch+=1
+			if numMatch >= 2:
+				return True
+			return False
+		else:#there is no top_card
 			hCount = 0
 			sCount = 0
 			cCount = 0
 			dCount = 0
 			for card in self.game.hand_for(self):
 				if card[1]=="h":
-					hCount++
+					hCount+=1
 				elif card[1]=="s":
-					sCount++
+					sCount+=1
 				elif card[1]=="c":
-					cCount++
+					cCount+=1
 				elif card[1]=="d":
-					dCount++
+					dCount+=1
 				else:
 					print("Well shit")
 			if hCount>=3:
