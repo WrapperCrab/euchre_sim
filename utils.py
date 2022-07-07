@@ -1,4 +1,4 @@
-VALUE_MAP = {'9': 0, 'T': 1, 'J': 2, 'Q': 3, 'K': 4, 'A': 5}
+VALUE_MAP = {'9': 1, 'T': 2, 'J': 3, 'Q': 4, 'K': 5, 'A': 6}
 
 def best_card(cards, trump=None, lead=None):
 	""" Calculate winning card from list of cards
@@ -11,14 +11,28 @@ def best_card(cards, trump=None, lead=None):
 	val_map = {}
 	for c in cards:
 		val = VALUE_MAP[c[0]]
-		if lead == c[1]:
-			val *= 10
-		if trump == c[1]:
-			val *= 100
-			if c[0] == 'J':
-				val = val*10 + 5
-		if trump == same_color(c[1]) and c[0] == 'J':
-			val = val*1000 + 3
+		if trump == c[1]:#This is trump, maybe right
+			if c[0] == 'J':#this is the right
+				val += 40
+			else:#This is normal trump
+				val += 20
+		elif trump == same_color(c[1]) & c[0] == 'J':#this is the left
+			val +=30
+		else:#This is not trump
+			if lead == c[1]:#This is lead
+				val += 10
+			# else:#this card is not special
+
+
+		#Old function that I don't like
+		# if lead == c[1]:
+		# 	val *= 10
+		# if trump == c[1]:
+		# 	val *= 100
+		# 	if c[0] == 'J':
+		# 		val = val*10 + 5
+		# if trump == same_color(c[1]) and c[0] == 'J':
+		# 	val = val*1000 + 3
 
 		val_map[c] = val
 

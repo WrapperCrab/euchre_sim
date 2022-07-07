@@ -13,7 +13,7 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 
 		if not trick:#we are first
 			#find highest card overall
-			card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit)
+			card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit, None)
 			#!!!I don't know if this function works without specifying led suit
 		else:#we are not first
 			ledSuit = trick[0][1]
@@ -23,7 +23,7 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 					ledSuitCards.append(card) #add this card
 
 			if len(ledSuitCards)==0:
-				card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit)
+				card_to_play = utils.best_card(self.game.hand_for(self), trumpSuit, ledSuit)
 			else:
 				card_to_play = utils.best_card(ledSuitCards, trumpSuit, ledSuit)
 
