@@ -1,9 +1,8 @@
-from random import shuffle, randrange
+from random import shuffle, seed
 import utils
 
 SUITS = ['s', 'h', 'd', 'c']
 VALUES = ['9','T','J','Q','K','A']
-neededScore = 1
 	#value of 1 guarantees only 1 trick is played
 
 class Game:
@@ -41,9 +40,9 @@ class Game:
 		self._caller = None
 		self._dealer = None
 
-	def play_game(self):
+	def play_game(self, neededScore, randSeed):
 		while (self._game_score[1] < neededScore and self._game_score[2] < neededScore):
-			self.play_hand()
+			self.play_hand(randSeed)
 			print "===============> SCORE:", self._game_score
 
 		print "GAME OVER!"
@@ -53,12 +52,12 @@ class Game:
 			return 1
 		return 0
 
-	def play_hand(self):
+	def play_hand(self,randSeed):
 		# dealer is the "last" player in order
 		self._dealer = self._players[3]
 
 		# deal
-		self.deal_hand()
+		self.deal_hand(randSeed)
 
 		# call trump
 		self.call_trump()
@@ -105,15 +104,30 @@ class Game:
 		self._rotate_until(self._dealer)
 		self._rotate()
 
-	def deal_hand(self):
+	def deal_hand(self, randSeed):
 		self.__deck = [val + suit for val in VALUES for suit in SUITS]
+		seed(randSeed)
 		shuffle(self.__deck)
 
-		# euchre style dealing, for true authenticity
+		#Deal~3232 2323
+		parityDeal = 0
 		for p in self._players:
-			for _ in xrange(randrange(1,5)):
+			cardsToDeal = 0
+			if parityDeal%2==0:
+				cardsToDeal = 3
+			else:
+				cardsToDeal = 2
+			parityDeal+=1
+			for _ in xrange(cardsToDeal):
 				card = self.__deck.pop()
-				self._hands[p].append(card) # Game
+				self._hands[p].append(card)
+
+		# euchre style dealing, for true authenticity
+		#What the fuck you talkin about my man? You'd get beat up if you dealt like this
+		# for p in self._players:
+		# 	for _ in xrange(randrange(1,5)):
+		# 		card = self.__deck.pop()
+		# 		self._hands[p].append(card) # Game
 
 		for p in self._players:
 			for _ in xrange(5-len(self._hands[p])):
