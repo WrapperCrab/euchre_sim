@@ -24,8 +24,8 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 	team1Score = 0
 	team1aScore = 0
 
-	numGames = 5
-	neededScore = 5
+	numGames = 1000
+	neededScore = 10
 
 	for index in range(numGames):
 		randSeed = randrange(-10000,10000)
