@@ -47,6 +47,10 @@ class Player:
 		"""
 		return True#always call (lol)
 
+	def call2(self, top_card):
+		"""this is run when all players passed in first round"""
+		pass
+
 	def discard(self):
 		""" Choose card to discard after picking up
 

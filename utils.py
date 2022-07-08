@@ -68,11 +68,11 @@ def getCardSuit(card, trump):#I wrote this
 	else:
 		return card[1]
 
-def getLegalCards(cards, leadSuit):
+def getLegalCards(cards, trump, lead):
 	legalCards = []
 	suitFollowingCards = []
 	for card in cards:
-		if getCardSuit(card)==leadSuit:
+		if getCardSuit(card, trump)==lead:
 			suitFollowingCards.append(card)
 	if not suitFollowingCards:#We have no cards following suit
 		legalCards = cards
@@ -88,7 +88,7 @@ def myTeamIsWinning(trick, trump):
 	else:#our partner has already gone
 		myPosition = len(trick)
 		partnerPosition = myPosition-2
-		lead = getCardSuit(trick[0])
+		lead = getCardSuit(trick[0], trump)
 		winningCard = best_card(trick, trump, lead)
 		if winningCard==trick[partnerPosition]:
 			return True

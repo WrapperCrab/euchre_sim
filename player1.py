@@ -30,44 +30,44 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 
 	def call(self, top_card):
 		""" Call trump or pass """
+		numMatch = 0
+		for card in self.game.hand_for(self):
+			if utils.getCardSuit(card,top_card[1]) == top_card[1]:
+				numMatch+=1
+		if numMatch >= 2:
+			return True
+		return False
 
-		if top_card!=None:
-			numMatch = 0
-			for card in self.game.hand_for(self):
-				if utils.getCardSuit(card,top_card[1]) == top_card[1]:
-					numMatch+=1
-			if numMatch >= 2:
-				return True
+	def call2(self, top_card):
+		bannedSuit = top_card[1]
+		hCount = 0
+		sCount = 0
+		cCount = 0
+		dCount = 0
+		for card in self.game.hand_for(self):
+			if utils.getCardSuit(card,'h')=="h":
+				hCount+=1
+			if utils.getCardSuit(card,'s')=="s":
+				sCount+=1
+			if utils.getCardSuit(card,'c')=="c":
+				cCount+=1
+			if utils.getCardSuit(card,'d')=="d":
+				dCount+=1
+		if (hCount>=3) & (bannedSuit!='h'):
+			return "h"
+		elif (sCount>=3) & (bannedSuit!='s'):
+			return "s"
+		elif (cCount>=3) & (bannedSuit!='c'):
+			return "c"
+		elif (dCount>=3) & (bannedSuit!='d'):
+			return "d"
+		elif self.game.position_for(self)!=3:#We are not the dealer
 			return False
-		else:#there is no top_card
-			hCount = 0
-			sCount = 0
-			cCount = 0
-			dCount = 0
-			for card in self.game.hand_for(self):
-				if utils.getCardSuit(card,'h')=="h":
-					hCount+=1
-				if utils.getCardSuit(card,'s')=="s":
-					sCount+=1
-				if utils.getCardSuit(card,'c')=="c":
-					cCount+=1
-				if utils.getCardSuit(card,'d')=="d":
-					dCount+=1
-				else:
-					print("Well shit")
-			if hCount>=3:
+		else:
+			if bannedSuit!='h':
 				return "h"
-			elif sCount>=3:
-				return "s"
-			elif cCount>=3:
-				return "c"
-			elif dCount>=3:
-				return "d"
-			elif self.game.position_for(self)!=3:#We are not the dealer
-				return False
 			else:
-				return "h"
-
+				return "s"
 
 	def discard(self):
 		""" Choose card to discard after picking up	"""

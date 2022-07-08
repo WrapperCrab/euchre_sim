@@ -167,11 +167,13 @@ class Game:
 		self.print_hand()
 
 		for p in self._players:
-			call_result = p.call(None)
+			call_result = p.call2(self._top_card)
 
 			if call_result not in SUITS and p == self._dealer:
 				raise IllegalPlayException("The dealer got screwed - You have to call something!")
 			if call_result == self._top_card[1]:
+				print(call_result)
+				print(self._top_card[1])
 				raise IllegalPlayException("Can't call the face up card after it's flipped")
 			if call_result in SUITS:
 				self._trump = call_result
