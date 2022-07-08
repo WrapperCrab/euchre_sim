@@ -1,4 +1,4 @@
-from random import shuffle, seed
+from random import shuffle, seed, randrange
 import utils
 
 SUITS = ['s', 'h', 'd', 'c']
@@ -41,8 +41,9 @@ class Game:
 		self._dealer = None
 
 	def play_game(self, neededScore, randSeed):
+		seed(randSeed)
 		while (self._game_score[1] < neededScore and self._game_score[2] < neededScore):
-			self.play_hand(randSeed)
+			self.play_hand()
 			print "===============> SCORE:", self._game_score
 
 		print "GAME OVER!"
@@ -52,12 +53,16 @@ class Game:
 			return 1
 		return 0
 
-	def play_hand(self,randSeed):
+	def play_hand(self):
+		#Randomize which player gets first deal
+		DealerNum = randrange(4)
+		self._rotate_until(self._players[DealerNum])
+
 		# dealer is the "last" player in order
 		self._dealer = self._players[3]
 
 		# deal
-		self.deal_hand(randSeed)
+		self.deal_hand()
 
 		# call trump
 		self.call_trump()
@@ -101,12 +106,11 @@ class Game:
 			p.active = True
 
 		# rotate dealer (rotate positions)
-		self._rotate_until(self._dealer)
-		self._rotate()
+		self._rotate_until(self._dealer)#This was originally implemented wrong
+		self._rotate()#
 
-	def deal_hand(self, randSeed):
+	def deal_hand(self):
 		self.__deck = [val + suit for val in VALUES for suit in SUITS]
-		seed(randSeed)
 		shuffle(self.__deck)
 
 		#Deal~3232 2323
@@ -209,11 +213,11 @@ class Game:
 
 	def _rotate(self):
 		""" Rotate players in self._players so that player after dealer becomes dealer """
-		self._players = self._players[1:] + self._players[:1]
+		self._players = self._players[1:] + self._players[:1]#!!!This should work, but it's acting funky
 
-	def _rotate_until(self, player_at_front):
-		""" Rotate players in self._players until player_at_front is as such """
-		while self._players[0] != player_at_front:
+	def _rotate_until(self, dealer):
+		""" Rotate players in self._players until dealer is in the dealer position again"""
+		while self._players[3] != dealer:
 			self._rotate()
 
 	def hand_for(self, player):
