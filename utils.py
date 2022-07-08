@@ -67,3 +67,48 @@ def getCardSuit(card, trump):#I wrote this
 		return trump#This is the left
 	else:
 		return card[1]
+
+def getLegalCards(cards, leadSuit):
+	legalCards = []
+	suitFollowingCards = []
+	for card in cards:
+		if getCardSuit(card)==leadSuit:
+			suitFollowingCards.append(card)
+	if not suitFollowingCards:#We have no cards following suit
+		legalCards = cards
+	else:#WE do have cards following suit
+		legalCards = suitFollowingCards
+	return legalCards
+
+def myTeamIsWinning(trick, trump):
+	if not trick:
+		return True
+	elif len(trick)==1:
+		return False
+	else:#our partner has already gone
+		myPosition = len(trick)
+		partnerPosition = myPosition-2
+		lead = getCardSuit(trick[0])
+		winningCard = best_card(trick, trump, lead)
+		if winningCard==trick[partnerPosition]:
+			return True
+		else:
+			return False
+
+def worstCard(cards, trump, lead):#I could definitely merge this with best_card, but I don't feel it right now
+	val_map = {}
+	for c in cards:
+		val = VALUE_MAP[c[0]]
+		if trump == c[1]:#This is trump, maybe right
+			if c[0] == 'J':#this is the right
+				val += 40
+			else:#This is normal trump
+				val += 20
+		elif (trump == same_color(c[1])) & (c[0] == 'J'):#this is the left
+			val +=30
+		else:#This is not trump
+			if lead == c[1]:#This is lead
+				val += 10
+			# else:#this card is not special
+		val_map[c] = val
+	return sorted(val_map.items(), key=lambda x: x[1], reverse=False)[0][0]
