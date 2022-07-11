@@ -96,6 +96,7 @@ def myTeamIsWinning(trick, trump):
 			return False
 
 def worstCard(cards, trump, lead):#I could definitely merge this with best_card, but I don't feel it right now
+	#Works even when trump and or lead is None
 	val_map = {}
 	for c in cards:
 		val = VALUE_MAP[c[0]]

@@ -2,30 +2,31 @@ from game import Game
 from player import Player
 from player1 import Player1
 from player2 import Player2
+from player3 import Player3
 from random import randrange
 
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
 
-	p1 = Player2("Henry")
-	p3 = Player2("Paul")
+	p1 = Player3("Henry")
+	p3 = Player3("Paul")
 
-	p2 = Player1("Alex")
-	p4 = Player1("Sarah")
+	p2 = Player2("Alex")
+	p4 = Player2("Sarah")
 
 	"Control Game"
-	p1a = Player1("HenryA")
-	p3a = Player1("PaulA")
+	p1a = Player2("HenryA")
+	p3a = Player2("PaulA")
 
-	p2a = Player1("AlexA")
-	p4a = Player1("SarahA")
+	p2a = Player2("AlexA")
+	p4a = Player2("SarahA")
 
 	team1Score = 0
 	team1aScore = 0
 
-	numGames = 1
-	neededScore = 10
+	numGames = 1#Number of games played
+	neededScore = 10#Number of points needed to win a game
 	printOutput = True#Whether or not each hand is printed in the console
 
 	for index in range(numGames):
