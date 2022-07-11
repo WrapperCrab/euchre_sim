@@ -40,20 +40,21 @@ class Game:
 		self._caller = None
 		self._dealer = None
 
-	def play_game(self, neededScore, randSeed):
+	def play_game(self, neededScore, randSeed, printOutput):
 		seed(randSeed)
 		while (self._game_score[1] < neededScore and self._game_score[2] < neededScore):
-			self.play_hand()
-			print "===============> SCORE:", self._game_score
-
-		print "GAME OVER!"
+			self.play_hand(printOutput)
+			if printOutput:
+				print "===============> SCORE:", self._game_score
+		if printOutput:
+			print "GAME OVER!"
 
 		#In order to keep track of who's won and lost
 		if self._game_score[1]>=neededScore:
 			return 1
 		return 0
 
-	def play_hand(self):
+	def play_hand(self, printOutput):
 		#Randomize which player gets first deal
 		DealerNum = randrange(4)
 		self._rotate_until(self._players[DealerNum])
@@ -65,9 +66,11 @@ class Game:
 		self.deal_hand()
 
 		# call trump
-		self.call_trump()
-		self.print_hand()
-		print "top card", self._top_card
+		self.call_trump(printOutput)
+		if printOutput:
+			self.print_hand()
+		if printOutput:
+			print "top card", self._top_card
 
 		# play tricks
 		for _ in xrange(5):
@@ -77,8 +80,9 @@ class Game:
 				card = p.action(trick)
 				if p not in self._inactives:
 					if len(trick) > 0 and p.has_suit(utils.getCardSuit(trick[0],self._trump), self._trump) and (utils.getCardSuit(trick[0],self._trump)!=utils.getCardSuit(card,self._trump)):
-						print(trick)#!!!This is before the card is added to the trick
-						print(card)
+						if printOutput:
+							print(trick)#!!!This is before the card is added to the trick
+							print(card)
 						raise IllegalPlayException("Must play the lead suit if you've got it")
 					if card not in self._hands[p]:
 						raise IllegalPlayException("Player doesn't have that card to play")
@@ -89,7 +93,8 @@ class Game:
 			winning_player = self._players[trick.index(winning_card)]
 			self._tricks_score[self._teams[winning_player]] += 1
 			self._rotate_until(winning_player)
-			print winning_player.name, winning_card, trick
+			if printOutput:
+				print winning_player.name, winning_card, trick
 
 		# score
 		self.score_hand()
@@ -140,7 +145,7 @@ class Game:
 
 		self._top_card = self.__deck.pop()
 
-	def call_trump(self):
+	def call_trump(self, printOutput):
 		for p in self._players:
 			call_result = p.call(self._top_card)
 			if call_result != False:
@@ -162,9 +167,10 @@ class Game:
 				for pl in self._players:
 					pl.end_call(self._positions[p], self._trump)
 				return
-			print p.name, ":", self._trump
-
-		self.print_hand()
+			if printOutput:
+				print p.name, ":", self._trump
+		if printOutput:
+			self.print_hand()
 
 		for p in self._players:
 			call_result = p.call2(self._top_card)
@@ -172,8 +178,9 @@ class Game:
 			if call_result not in SUITS and p == self._dealer:
 				raise IllegalPlayException("The dealer got screwed - You have to call something!")
 			if call_result == self._top_card[1]:
-				print(call_result)
-				print(self._top_card[1])
+				if printOutput:
+					print(call_result)
+					print(self._top_card[1])
 				raise IllegalPlayException("Can't call the face up card after it's flipped")
 			if call_result in SUITS:
 				self._trump = call_result
