@@ -3,7 +3,7 @@ import utils
 import copy
 
 SUITS = ['s', 'h', 'd', 'c']
-VALUES = ['9','T','J','Q','K','A']
+VALUES = ['9', 'T', 'J', 'Q', 'K', 'A']
 
 class Game:
 	def __init__(self, players):
@@ -61,7 +61,6 @@ class Game:
 		return 0
 
 	def play_hand(self, printOutput):
-		print(self.dealerIndex)
 		self._rotate_until_dealer(self.dealerIndex)
 
 		# dealer is the "last" player in order
@@ -150,18 +149,19 @@ class Game:
 		for p in self.playersOrder:
 			call_result = p.call(self._top_card)
 			if call_result != False:
+				self._trump = self._top_card[1]
+
 				self._hands[self._dealer].append(self._top_card) # Game
 				discard = self._dealer.discard()
-
-				if discard not in self._hands[self._dealer]:
-					raise IllegalPlayException("Dealer must discard card that was in hand")
 				self._hands[self._dealer].remove(discard) # Game
-
-				self._trump = self._top_card[1]
 
 				if call_result == "alone":
 					self._inactives.append(self._teammate_for(p))
 					self._teammate_for(p).active = False
+					if self.playersOrder[0]==self._teammate_for(p):
+						#The afk is first. rotate
+						self.rotate()
+						#This implements left of the dealer
 
 				# tell players and game who called
 				self._caller = p
