@@ -45,7 +45,8 @@ class Player:
 			*** note if player is dealer (position == 3), player can't pass
 
 		"""
-		return True#always call (lol)
+		#return True#always call (lol)
+		return "alone"
 
 	def call2(self, top_card):
 		"""this is run when all players passed in first round"""

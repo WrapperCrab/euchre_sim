@@ -1,5 +1,6 @@
 from random import shuffle, seed, randrange
 import utils
+import copy
 
 SUITS = ['s', 'h', 'd', 'c']
 VALUES = ['9','T','J','Q','K','A']
@@ -10,15 +11,17 @@ class Game:
 	def __init__(self, players):
 		if len(players) != 4:
 			raise IllegalPlayException("Game only supports 5 players")#Don't understand this error
-		self._players = players
+		self._players = players#Always kept the same
+		self.dealerIndex = randrange(4)#index of the dealer in _players
+		self.playersOrder = copy.copy(self._players)#shallow copy of array that can be rotated
 
 		# set positions and teams
 		self._positions = {}
 		self._teams = {}
-		self._hands = {p: [] for p in self._players}
+		self._hands = {p: [] for p in self.playersOrder}
 		self._inactives = [] # current inactive player for the hand ("alone")
 		position = 0
-		for p in self._players:
+		for p in self.playersOrder:
 			p.game = self
 
 			# set both player attr and position dict for security
@@ -56,11 +59,10 @@ class Game:
 
 	def play_hand(self, printOutput):
 		#Randomize which player gets first deal
-		DealerNum = randrange(4)
-		self._rotate_until(self._players[DealerNum])
+		self._rotate_until(self._players[self.dealerIndex])
 
 		# dealer is the "last" player in order
-		self._dealer = self._players[3]
+		self._dealer = self.playersOrder[3]
 
 		# deal
 		self.deal_hand()
@@ -76,7 +78,7 @@ class Game:
 		for _ in xrange(5):
 			trick = []
 
-			for p in self._players:
+			for p in self.playersOrder:
 				card = p.action(trick)
 				if p not in self._inactives:
 					if len(trick) > 0 and p.has_suit(utils.getCardSuit(trick[0],self._trump), self._trump) and (utils.getCardSuit(trick[0],self._trump)!=utils.getCardSuit(card,self._trump)):
@@ -90,9 +92,9 @@ class Game:
 					self._hands[p].remove(card) # Game
 
 			winning_card = utils.best_card(trick, self._trump, utils.getCardSuit(trick[0],self._trump))
-			winning_player = self._players[trick.index(winning_card)]
+			winning_player = self.playersOrder[trick.index(winning_card)]
 			self._tricks_score[self._teams[winning_player]] += 1
-			self._rotate_until(winning_player)
+			self._rotate_until(winning_player)#!!!We've lost track of who's dealer
 			if printOutput:
 				print winning_player.name, winning_card, trick
 
@@ -105,8 +107,7 @@ class Game:
 		self._inactives = []
 		for team_num in xrange(1, 3):
 			self._tricks_score[team_num] = 0
-
-		for p in self._players:
+		for p in self.playersOrder:
 			self._hands[p] = [] # Game
 			p.active = True
 
@@ -120,7 +121,7 @@ class Game:
 
 		#Deal~3232 2323
 		parityDeal = 0
-		for p in self._players:
+		for p in self.playersOrder:
 			cardsToDeal = 0
 			if parityDeal%2==0:
 				cardsToDeal = 3
@@ -133,12 +134,12 @@ class Game:
 
 		# euchre style dealing, for true authenticity
 		#What the fuck you talkin about my man? You'd get beat up if you dealt like this
-		# for p in self._players:
+		# for p in self.playersOrder:
 		# 	for _ in xrange(randrange(1,5)):
 		# 		card = self.__deck.pop()
 		# 		self._hands[p].append(card) # Game
 
-		for p in self._players:
+		for p in self.playersOrder:
 			for _ in xrange(5-len(self._hands[p])):
 				card = self.__deck.pop()
 				self._hands[p].append(card) # Game
@@ -146,7 +147,7 @@ class Game:
 		self._top_card = self.__deck.pop()
 
 	def call_trump(self, printOutput):
-		for p in self._players:
+		for p in self.playersOrder:
 			call_result = p.call(self._top_card)
 			if call_result != False:
 				self._hands[self._dealer].append(self._top_card) # Game
@@ -164,7 +165,7 @@ class Game:
 
 				# tell players and game who called
 				self._caller = p
-				for pl in self._players:
+				for pl in self.playersOrder:
 					pl.end_call(self._positions[p], self._trump)
 				return
 			if printOutput:
@@ -172,7 +173,7 @@ class Game:
 		if printOutput:
 			self.print_hand()
 
-		for p in self._players:
+		for p in self.playersOrder:
 			call_result = p.call2(self._top_card)
 
 			if call_result not in SUITS and p == self._dealer:
@@ -187,7 +188,7 @@ class Game:
 
 				# tell players and game who called
 				self._caller = p
-				for pl in self._players:
+				for pl in self.playersOrder:
 					pl.end_call(self._positions[p], self._trump)
 				return
 
@@ -196,7 +197,7 @@ class Game:
 		non_calling_team = (calling_team % 2) + 1
 		if self._tricks_score[calling_team] > self._tricks_score[non_calling_team]:
 			if self._tricks_score[calling_team] == 5:
-				if (self._players[calling_team-1] in self._inactives) | (self._players[calling_team+1] in self._inactives):#The winning team went alone!
+				if (self.playersOrder[calling_team-1] in self._inactives) | (self.playersOrder[calling_team+1] in self._inactives):#The winning team went alone!
 					#This piece of the code was beyond fucked when I first got to it
 					print("this should not have happened")
 					self._game_score[calling_team] += 4
@@ -210,23 +211,27 @@ class Game:
 	def print_hand(self):
 		""" Print hand for each player """
 		print "------------------- Trump:", self._trump, "---------------"
-		for p in self._players:
+		for p in self.playersOrder:
 			if p not in self._inactives:
 				print self._positions[p], p.name, self._hands[p]
 			else:
 				print self._positions[p], p.name, "*** asleep ***"
 
-	def _teammate_for(self, player):
+	def _teammate_for(self, thisPlayer):
 		""" Return teammate of player """
-		return self._players[self._positions[(player.num + 2) % 4]]
+		for index in range(4):
+			if (self.playersOrder[index] == thisPlayer):
+				return self.playersOrder[(index+2)%4]
+
+		#return self._players[self._positions[(player.num + 2) % 4]]#!!!
 
 	def _rotate(self):
-		""" Rotate players in self._players so that player after dealer becomes dealer """
-		self._players = self._players[1:] + self._players[:1]#!!!This should work, but it's acting funky
+		""" Rotate players in self.playersOrder so that player after dealer becomes dealer """
+		self.playersOrder = self.playersOrder[1:] + self.playersOrder[:1]#!!!This should work, but it's acting funky
 
-	def _rotate_until(self, dealer):
-		""" Rotate players in self._players until dealer is in the dealer position again"""
-		while self._players[3] != dealer:
+	def _rotate_until(self, dealerIndex):
+		""" Rotate players in self.playersOrder until dealer is in the dealer position again"""
+		while self.playersOrder[3] != self._players[dealerIndex]:
 			self._rotate()
 
 	def hand_for(self, player):

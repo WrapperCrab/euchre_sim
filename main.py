@@ -5,31 +5,45 @@ from player2 import Player2
 from player3 import Player3
 from random import randrange
 
+import copy
+
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
 
-	p1 = Player3("Henry")
-	p3 = Player3("Paul")
+	p1 = Player("Henry")
+	p3 = Player("Paul")
 
-	p2 = Player2("Alex")
-	p4 = Player2("Sarah")
+	p2 = Player("Alex")
+	p4 = Player("Sarah")
 
 	"Control Game"
-	p1a = Player2("HenryA")
-	p3a = Player2("PaulA")
+	p1a = Player("HenryA")
+	p3a = Player("PaulA")
 
-	p2a = Player2("AlexA")
-	p4a = Player2("SarahA")
+	p2a = Player("AlexA")
+	p4a = Player("SarahA")
 
 	team1Score = 0
 	team1aScore = 0
 
 	numGames = 1#Number of games played
-	neededScore = 10#Number of points needed to win a game
+	neededScore = 1#Number of points needed to win a game
 	printOutput = True#Whether or not each hand is printed in the console
 
 	for index in range(numGames):
+
+		#Test shallow copy arrays
+		arr1 = [1,2,3,4]
+		arr2 = copy.copy(arr1)
+
+		arr2 = arr2[1:] + arr2[:1]
+
+		print(arr1)
+		print(arr2)
+
+
+		"""
 		randSeed = randrange(-10000,10000)
 
 		gTest = Game([p1, p2, p3, p4])
@@ -37,6 +51,7 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 
 		gControl = Game([p1a, p2a, p3a, p4a])
 		team1aScore+=gControl.play_game(neededScore, randSeed, printOutput)
+		"""
 
 	print "team 1 won ",team1Score," games out of ", numGames
 	print "team 1a won ",team1aScore," games out of ", numGames
