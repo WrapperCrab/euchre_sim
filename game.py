@@ -4,16 +4,14 @@ import copy
 
 SUITS = ['s', 'h', 'd', 'c']
 VALUES = ['9','T','J','Q','K','A']
-	#value of 1 guarantees only 1 trick is played
 
 class Game:
-
 	def __init__(self, players):
 		if len(players) != 4:
 			raise IllegalPlayException("Game only supports 5 players")#Don't understand this error
 		self._players = players#Always kept the same
-		self.dealerIndex = randrange(4)#index of the dealer in _players
-		self.playersOrder = copy.copy(self._players)#shallow copy of array that can be rotated
+		self.dealerIndex=3 #index of dealer in _players
+		self.playersOrder = copy.copy(self._players)#shallow copy of players that can be rotated
 
 		# set positions and teams
 		self._positions = {}
@@ -45,7 +43,12 @@ class Game:
 
 	def play_game(self, neededScore, randSeed, printOutput):
 		seed(randSeed)
+		#Select a random dealer
+		self.dealerIndex = randrange(4)
+		print(self.dealerIndex)
+
 		while (self._game_score[1] < neededScore and self._game_score[2] < neededScore):
+			self.dealerIndex = (self.dealerIndex+1)%4#Go to the next dealer
 			self.play_hand(printOutput)
 			if printOutput:
 				print "===============> SCORE:", self._game_score
@@ -58,8 +61,8 @@ class Game:
 		return 0
 
 	def play_hand(self, printOutput):
-		#Randomize which player gets first deal
-		self._rotate_until(self._players[self.dealerIndex])
+		print(self.dealerIndex)
+		self._rotate_until_dealer(self.dealerIndex)
 
 		# dealer is the "last" player in order
 		self._dealer = self.playersOrder[3]
@@ -94,7 +97,8 @@ class Game:
 			winning_card = utils.best_card(trick, self._trump, utils.getCardSuit(trick[0],self._trump))
 			winning_player = self.playersOrder[trick.index(winning_card)]
 			self._tricks_score[self._teams[winning_player]] += 1
-			self._rotate_until(winning_player)#!!!We've lost track of who's dealer
+
+			self._rotate_until_first(winning_player)#!!!This is incorrect anyway
 			if printOutput:
 				print winning_player.name, winning_card, trick
 
@@ -110,10 +114,6 @@ class Game:
 		for p in self.playersOrder:
 			self._hands[p] = [] # Game
 			p.active = True
-
-		# rotate dealer (rotate positions)
-		self._rotate_until(self._dealer)#This was originally implemented wrong
-		self._rotate()#
 
 	def deal_hand(self):
 		self.__deck = [val + suit for val in VALUES for suit in SUITS]
@@ -223,15 +223,19 @@ class Game:
 			if (self.playersOrder[index] == thisPlayer):
 				return self.playersOrder[(index+2)%4]
 
-		#return self._players[self._positions[(player.num + 2) % 4]]#!!!
-
 	def _rotate(self):
 		""" Rotate players in self.playersOrder so that player after dealer becomes dealer """
 		self.playersOrder = self.playersOrder[1:] + self.playersOrder[:1]#!!!This should work, but it's acting funky
 
-	def _rotate_until(self, dealerIndex):
+	def _rotate_until_dealer(self, dealerIndex):
 		""" Rotate players in self.playersOrder until dealer is in the dealer position again"""
+		print(dealerIndex)
 		while self.playersOrder[3] != self._players[dealerIndex]:
+			self._rotate()
+
+	def _rotate_until_first(self, winner):
+		#winner refers to a player in playersOrder
+		while self.playersOrder[0] != winner:
 			self._rotate()
 
 	def hand_for(self, player):

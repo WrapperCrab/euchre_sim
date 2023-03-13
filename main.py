@@ -33,17 +33,6 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 
 	for index in range(numGames):
 
-		#Test shallow copy arrays
-		arr1 = [1,2,3,4]
-		arr2 = copy.copy(arr1)
-
-		arr2 = arr2[1:] + arr2[:1]
-
-		print(arr1)
-		print(arr2)
-
-
-		"""
 		randSeed = randrange(-10000,10000)
 
 		gTest = Game([p1, p2, p3, p4])
@@ -51,7 +40,6 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 
 		gControl = Game([p1a, p2a, p3a, p4a])
 		team1aScore+=gControl.play_game(neededScore, randSeed, printOutput)
-		"""
 
 	print "team 1 won ",team1Score," games out of ", numGames
 	print "team 1a won ",team1aScore," games out of ", numGames
