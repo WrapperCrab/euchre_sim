@@ -35,7 +35,15 @@ class Player3(Player):
 def call(self, top_card):
 	""" Call trump or pass """
 	#calling is drastically different depending on your position at the table
-	position = self.game.position_for(self)
+	#!!!position = self.game.position_for(self)
+	#unfortunately, this function does not return what it should. It is constant for the whole game
+	#This works instead
+	position = 0
+	for index in range(4):
+		if self.game.playersOrder[index] == self:
+			position = index
+
+
 	myHand = self.game.hand_for(self)
 	cp = 0
 	wouldBeTrump = top_card[1]

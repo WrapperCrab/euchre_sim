@@ -46,6 +46,16 @@ class Player:
 
 		"""
 		#return True#always call (lol)
+		#if in position 3, go alone
+		position = 0
+		for index in range(4):
+			if self.game.playersOrder[index] == self:
+				position = index
+
+		if position==3:
+			return "alone"
+
+		#else, pass
 		return "alone"
 
 	def call2(self, top_card):
