@@ -11,8 +11,8 @@ import copy
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
-	p1 = Player2("Henry")
-	p3 = Player2("Paul")
+	p1 = Player3("Henry")
+	p3 = Player3("Paul")
 
 	p2 = Player("Alex")
 	p4 = Player("Sarah")
