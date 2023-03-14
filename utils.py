@@ -11,7 +11,7 @@ def best_card(cards, trump=None, lead=None):
 	val_map = {}
 	for c in cards:
 		val = VALUE_MAP[c[0]]
-		if trump == c[1]:#This is trump, maybe right
+		if trump == c[1]:#This is trump, may be right
 			if c[0] == 'J':#this is the right
 				val += 40
 			else:#This is normal trump
@@ -55,27 +55,24 @@ def getLegalCards(cards, trump, lead):
 		legalCards = suitFollowingCards
 	return legalCards
 
-def myTeamIsWinning(trick, trump):
-	if not trick:
+def myTeamIsWinning(trick, trump, playersInTrick, team):
+	if len(trick)==0:
 		return True
-	elif len(trick)==1:
-		return False
-	else:#our partner has already gone
-		myPosition = len(trick)
-		partnerPosition = myPosition-2
-		lead = getCardSuit(trick[0], trump)
-		winningCard = best_card(trick, trump, lead)
-		if winningCard==trick[partnerPosition]:
+	elif len(trick)>=1:
+		ledSuit = getCardSuit(trick[0], trump)
+		winningCard = best_card(trick, trump, ledSuit)
+		#find which team this card belongs to
+		winningPlayer = playersInTrick[trick.index(winningCard)]
+		if winningPlayer in team:
 			return True
-		else:
-			return False
+		return False
 
 def worstCard(cards, trump, lead):#I could definitely merge this with best_card, but I don't feel it right now
 	#Works even when trump and or lead is None
 	val_map = {}
 	for c in cards:
 		val = VALUE_MAP[c[0]]
-		if trump == c[1]:#This is trump, maybe right
+		if trump == c[1]:#This is trump, may be right
 			if c[0] == 'J':#this is the right
 				val += 40
 			else:#This is normal trump

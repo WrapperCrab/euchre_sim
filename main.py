@@ -1,3 +1,4 @@
+import utils
 from game import Game
 from player import Player
 from player1 import Player1
@@ -10,8 +11,8 @@ import copy
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
-	p1 = Player("Henry")
-	p3 = Player("Paul")
+	p1 = Player2("Henry")
+	p3 = Player2("Paul")
 
 	p2 = Player("Alex")
 	p4 = Player("Sarah")
@@ -29,6 +30,7 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 	numGames = 100#Number of games played
 	neededScore = 10#Number of points needed to win a game
 	printOutput = False#Whether or not each hand is printed in the console
+
 
 	for index in range(numGames):
 		randSeed = randrange(-10000,10000)

@@ -6,18 +6,19 @@ class Player:
 		self.name = name
 		self.game = None
 
-	def action(self, trick):#The original function didn't know that the left changes suit. Pathetic.
+	def action(self, trick, playersInTrick):#The original function didn't know that the left changes suit. Pathetic.
 		""" Play a card in trick
 		trick -- list of cards played in order, trick[0] is lead card
+		playersInTrick -- list of players that played the corresponding card in trick
 		"""
 		if len(trick) == 0:
 			#we are first
 			return self.game.hand_for(self)[0]#first card in hand
 		else:#We are not first, there is a lead suit
-			leadSuit = utils.getCardSuit(trick[0],self.game.trump)
+			ledSuit = utils.getCardSuit(trick[0],self.game.trump)
 			for card in self.game.hand_for(self):
 				cardSuit = utils.getCardSuit(card,self.game.trump)
-				if (cardSuit == leadSuit):
+				if (cardSuit == ledSuit):
 					#this is the same suit as the lead suit
 					return card
 			#We only get here if we have no lead suit

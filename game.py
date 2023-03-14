@@ -71,13 +71,13 @@ class Game:
 			for index in range(4):
 				p = self.playersOrder[index]
 				if p not in self._inactives:
-					card = p.action(trick)
+					card = p.action(trick,playersInTrick)
 
-					leadSuit = None
+					ledSuit = None
 					if len(trick)>0:
-						leadSuit = utils.getCardSuit(trick[0],self._trump)
+						ledSuit = utils.getCardSuit(trick[0],self._trump)
 					playedSuit = utils.getCardSuit(card,self._trump)
-					if len(trick) > 0 and p.has_suit(leadSuit, self._trump) and leadSuit!=playedSuit:
+					if len(trick) > 0 and p.has_suit(ledSuit, self._trump) and ledSuit!=playedSuit:
 						raise IllegalPlayException("Must play the lead suit if you've got it")
 					if card not in self._hands[p]:
 						raise IllegalPlayException("Player doesn't have that card to play")
@@ -166,8 +166,8 @@ class Game:
 				return
 			if printOutput:
 				print p.name, ":" , self._trump
-
-		print "top card flipped over"
+		if printOutput:
+			print "top card flipped over"
 		#second pass
 		for index in range(4):
 			p=self.playersOrder[index]
