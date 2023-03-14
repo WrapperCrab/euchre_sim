@@ -70,16 +70,6 @@ class Player:
 		"""
 		return self.game.hand_for(self)[0]
 
-	def end_call(self, caller_position, trump):
-		""" Communicate result of calling to player
-
-		caller_position -- current position of player who called, so if your position is 0, your
-			teammate would be 2
-		trump -- the trump that was called.  can also be accessed via self.game.trump
-
-		"""
-		pass#placeholder that does nothing, and doesn't throw a compile error
-
 	def end_trick(self, winner_position, lead_position, trick):
 		""" Communicate result of trick to player
 

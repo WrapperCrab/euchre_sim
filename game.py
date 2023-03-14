@@ -8,30 +8,25 @@ VALUES = ['9', 'T', 'J', 'Q', 'K', 'A']
 class Game:
 	def __init__(self, players):
 		if len(players) != 4:
-			raise IllegalPlayException("Game only supports 5 players")#Don't understand this error
+			raise IllegalPlayException("Game only supports 4 players")
 		self._players = players#Always kept the same
 		self.dealerIndex=3 #index of dealer in _players
 		self.playersOrder = copy.copy(self._players)#shallow copy of players that can be rotated
 
 		# set positions and teams
-		self._positions = {}
 		self._teams = {}
 		self._hands = {p: [] for p in self.playersOrder}
 		self._inactives = [] # current inactive player for the hand ("alone")
-		position = 0
 		for p in self.playersOrder:
 			p.game = self
 
 			# set both player attr and position dict for security
-			self._positions[p] = position
-			p.position = position
-			if p.position % 2 == 0:
+			if p == self.playersOrder[0] or p== self.playersOrder[2]:
 				p.team_num = 1
-				self._teams[p] = 1
+				self._teams[p]=1
 			else:
 				p.team_num = 2
-				self._teams[p] = 2
-			position += 1
+				self._teams[p]=2
 
 		self._game_score = {1: 0, 2: 0}
 		self._tricks_score = {1: 0, 2: 0}
@@ -165,8 +160,6 @@ class Game:
 
 				# tell players and game who called
 				self._caller = p
-				for pl in self.playersOrder:
-					pl.end_call(self._positions[p], self._trump)
 				return
 			if printOutput:
 				print p.name, ":", self._trump
@@ -188,8 +181,6 @@ class Game:
 
 				# tell players and game who called
 				self._caller = p
-				for pl in self.playersOrder:
-					pl.end_call(self._positions[p], self._trump)
 				return
 
 	def score_hand(self):
@@ -213,9 +204,10 @@ class Game:
 		print "------------------- Trump:", self._trump, "---------------"
 		for p in self.playersOrder:
 			if p not in self._inactives:
-				print self._positions[p], p.name, self._hands[p]
+				#!!!print actual positions
+				print "0", p.name, self._hands[p]
 			else:
-				print self._positions[p], p.name, "*** asleep ***"
+				print "0", p.name, "*** asleep ***"
 
 	def _teammate_for(self, thisPlayer):
 		""" Return teammate of player """
@@ -242,10 +234,6 @@ class Game:
 		""" Return hand of specified player """
 		return self._hands[player]
 
-	def position_for(self, player):
-		""" Return position of specified player """
-		return self._positions[player]
-
 	def team_num_for(self, player):
 		""" Return team_num of specified player """
 		if player in self._teams[1]:
@@ -266,14 +254,6 @@ class Game:
 	@property
 	def trump(self):
 		return self._trump
-
-	@property
-	def caller_pos(self):
-		return self._positions[self._caller]
-
-	@property
-	def dealer_pos(self):
-		return self._positions[self._dealer]
 
 	@property
 	def tricks_score(self):
