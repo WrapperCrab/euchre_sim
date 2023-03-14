@@ -50,13 +50,13 @@ class Player:
 		position = self.game.get_player_position(self)
 		if position==2:
 			return "alone"
-
-		#else, pass
-		return "alone"
+		return False
 
 	def call2(self, top_card):
 		"""this is run when all players passed in first round"""
-		pass
+		if top_card[1]=='d':
+			return 's'
+		return 'd'
 
 	def discard(self):
 		""" Choose card to discard after picking up

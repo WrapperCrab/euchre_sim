@@ -14,17 +14,17 @@ class Game:
 		self.playersOrder = copy.copy(self._players)#shallow copy of players that can be rotated
 
 		# set positions and teams
-		self._teams = {}
+		self._teams = [[], []]
 		self._hands = {p: [] for p in self.playersOrder}
 		self._inactives = [] # current inactive player for the hand ("alone")
 		for p in self.playersOrder:
 			p.game = self
 			if p == self.playersOrder[0] or p== self.playersOrder[2]:
 				p.team_num = 1
-				self._teams[p]=1
+				self._teams[0].append(p)
 			else:
 				p.team_num = 2
-				self._teams[p]=2
+				self._teams[1].append(p)
 
 		self._game_score = {1: 0, 2: 0}
 		self._tricks_score = {1: 0, 2: 0}
@@ -53,7 +53,6 @@ class Game:
 
 	def play_hand(self, printOutput):
 		self._rotate_until_dealer(self.dealerIndex)
-
 		# dealer is the "last" player in order
 		self._dealer = self.playersOrder[3]
 
@@ -64,30 +63,34 @@ class Game:
 		self.call_trump(printOutput)
 		if printOutput:
 			self.print_hand()
-		if printOutput:
-			print "top card", self._top_card
 
 		# play tricks
 		for _ in xrange(5):
 			trick = []
-
+			playersInTrick = []
 			for index in range(4):
 				p = self.playersOrder[index]
-				card = p.action(trick)
 				if p not in self._inactives:
-					if len(trick) > 0 and p.has_suit(utils.getCardSuit(trick[0],self._trump), self._trump) and (utils.getCardSuit(trick[0],self._trump)!=utils.getCardSuit(card,self._trump)):
+					card = p.action(trick)
+
+					leadSuit = None
+					if len(trick)>0:
+						leadSuit = utils.getCardSuit(trick[0],self._trump)
+					playedSuit = utils.getCardSuit(card,self._trump)
+					if len(trick) > 0 and p.has_suit(leadSuit, self._trump) and leadSuit!=playedSuit:
 						if printOutput:
-							print(trick)#!!!This is before the card is added to the trick
+							print(trick)
 							print(card)
 						raise IllegalPlayException("Must play the lead suit if you've got it")
 					if card not in self._hands[p]:
 						raise IllegalPlayException("Player doesn't have that card to play")
 					trick.append(card)
+					playersInTrick.append(p)
 					self._hands[p].remove(card) # Game
 
 			winning_card = utils.best_card(trick, self._trump, utils.getCardSuit(trick[0],self._trump))
-			winning_player = self.playersOrder[trick.index(winning_card)]
-			self._tricks_score[self._teams[winning_player]] += 1
+			winning_player = playersInTrick[trick.index(winning_card)]
+			self._tricks_score[self.team_num_for(winning_player)] += 1
 
 			self._rotate_until_first(winning_player)
 			if printOutput:
@@ -100,6 +103,8 @@ class Game:
 		self._trump = None
 		self._top_card = None
 		self._inactives = []
+		self._dealer = None
+		self._caller = None
 		for team_num in xrange(1, 3):
 			self._tricks_score[team_num] = 0
 		for p in self.playersOrder:
@@ -133,9 +138,9 @@ class Game:
 		self._top_card = self.__deck.pop()
 
 	def call_trump(self, printOutput):
+		print "top card", self._top_card
 		for index in range(4):
 			p=self.playersOrder[index]
-			print p.name
 			call_result = p.call(self._top_card)
 			if call_result != False:
 				#The suit has been called
@@ -145,23 +150,27 @@ class Game:
 				self._hands[self._dealer].remove(discard) # Game
 
 				if call_result == "alone":
+					# !!!This is redundant, and I'm sure it's not working
 					self._inactives.append(self._teammate_for(p))
 					self._teammate_for(p).active = False
 					if self.playersOrder[0]==self._teammate_for(p):
 						#The afk is first. rotate
-						self.rotate()
+						self._rotate()
 						#This implements left of the dealer
+					if printOutput:
+						print p.name, ":", self._trump, "  Alone!"
+				else:
+					if printOutput:
+						print p.name, ":", self._trump
 
 				# tell players and game who called
 				self._caller = p
 				return
-
-			#!!!but this happens only if call_result ==false. Thus, trump is undecided...
 			if printOutput:
-				print p.name, ":" #, self._trump
-		if printOutput:
-			self.print_hand()
+				print p.name, ":" , self._trump
 
+		print "top card flipped over"
+		#second pass
 		for index in range(4):
 			p=self.playersOrder[index]
 			call_result = p.call2(self._top_card)
@@ -175,31 +184,40 @@ class Game:
 				raise IllegalPlayException("Can't call the face up card after it's flipped")
 			if call_result in SUITS:
 				self._trump = call_result
-
+				if printOutput:
+					print p.name, ":", self._trump
 				# tell players and game who called
 				self._caller = p
 				return
+			#This is a legal pass
+			if printOutput:
+				print p.name, ":", self._trump
 
 	def score_hand(self):
-		calling_team = self._teams[self._caller]
-		non_calling_team = (calling_team % 2) + 1
-		if self._tricks_score[calling_team] > self._tricks_score[non_calling_team]:
-			if self._tricks_score[calling_team] == 5:
-				if (self.playersOrder[calling_team-1] in self._inactives) | (self.playersOrder[calling_team+1] in self._inactives):#The winning team went alone!
-					#This piece of the code was beyond fucked when I first got to it
-					print("this should not have happened")
-					self._game_score[calling_team] += 4
+		calling_team_num = self.team_num_for(self._caller)
+		non_calling_team_num = (calling_team_num%2)+1
+		calling_team = self._teams[calling_team_num-1]
+		non_calling_team = self._teams[non_calling_team_num-1]
+		if self._tricks_score[calling_team_num] > self._tricks_score[non_calling_team_num]:
+			#calling team won
+			if self._tricks_score[calling_team_num] == 5:
+				#calling team got all 5
+				if (calling_team[0] in self._inactives) | (calling_team[1] in self._inactives):
+					#calling team went alone
+					self._game_score[calling_team_num] += 4
 				else:
-					self._game_score[calling_team] += 2
+					#calling team did not go alone
+					self._game_score[calling_team_num] += 2
 			else:
-				self._game_score[calling_team] += 1
+				#calling team did not get all 5
+				self._game_score[calling_team_num] += 1
 		else:
-			self._game_score[non_calling_team] += 2
+			#calling team lost
+			self._game_score[non_calling_team_num] += 2
 
 	def print_hand(self):
 		""" Print hand for each player """
 		print "------------------- Trump:", self._trump, "---------------"
-		print [self.playersOrder[0].name]
 		for index in range(4):
 			p=self.playersOrder[index]
 
@@ -234,9 +252,9 @@ class Game:
 
 	def team_num_for(self, player):
 		""" Return team_num of specified player """
-		if player in self._teams[1]:
+		if player in self._teams[0]:
 			return 1
-		elif player in self._teams[2]:
+		elif player in self._teams[1]:
 			return 2
 		else:
 			raise Exception("You don't appear to be on either team :/")
@@ -248,10 +266,13 @@ class Game:
 	def get_player_position(self,player):
 		playerIndex = 0
 		for index in range(4):
-			if self.playersOrder[index]==player:
+			if self._players[index]==player:
 				playerIndex = index
 				break
 		return ((3+(playerIndex-self.dealerIndex))%4)
+
+
+
 
 	@property
 	def top_card(self):
