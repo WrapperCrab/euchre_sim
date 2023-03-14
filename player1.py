@@ -1,7 +1,7 @@
 import utils
 from player import Player
 
-class Player1(Player):#!!!Does not account for jacks changing suit
+class Player1(Player):
 	def call(self, top_card):
 		""" Call trump or pass """
 		numMatch = 0
@@ -38,7 +38,7 @@ class Player1(Player):#!!!Does not account for jacks changing suit
 			return ["c",True]
 		elif (dCount>=2) & (bannedSuit!='d'):
 			return ["d",True]
-		elif self.game.position_for(self)!=3:#We are not the dealer
+		elif self.game.get_player_position(self)!=3:#We are not the dealer
 			return [None,False]
 		else:
 			if bannedSuit!='h':
