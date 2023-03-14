@@ -78,9 +78,6 @@ class Game:
 						leadSuit = utils.getCardSuit(trick[0],self._trump)
 					playedSuit = utils.getCardSuit(card,self._trump)
 					if len(trick) > 0 and p.has_suit(leadSuit, self._trump) and leadSuit!=playedSuit:
-						if printOutput:
-							print(trick)
-							print(card)
 						raise IllegalPlayException("Must play the lead suit if you've got it")
 					if card not in self._hands[p]:
 						raise IllegalPlayException("Player doesn't have that card to play")
@@ -150,7 +147,7 @@ class Game:
 				self._hands[self._dealer].remove(discard) # Game
 
 				if call_result == "alone":
-					# !!!This is redundant, and I'm sure it's not working
+					#this is redundant
 					self._inactives.append(self._teammate_for(p))
 					self._teammate_for(p).active = False
 					if self.playersOrder[0]==self._teammate_for(p):
@@ -173,25 +170,38 @@ class Game:
 		#second pass
 		for index in range(4):
 			p=self.playersOrder[index]
-			call_result = p.call2(self._top_card)
-
-			if call_result not in SUITS and p == self._dealer:
-				raise IllegalPlayException("The dealer got screwed - You have to call something!")
-			if call_result == self._top_card[1]:
-				if printOutput:
-					print(call_result)
-					print(self._top_card[1])
-				raise IllegalPlayException("Can't call the face up card after it's flipped")
-			if call_result in SUITS:
-				self._trump = call_result
+			call = p.call2(self._top_card)
+			if call[1] == False:
+				#they passed
+				if p==self._dealer:
+					raise IllegalPlayException("The dealer got screwed - You have to call something!")
+				#This is a legal pass
 				if printOutput:
 					print p.name, ":", self._trump
-				# tell players and game who called
+			else:
+				#they did not pass
+				call_result = call[0]
+				if call_result == self._top_card[1]:
+					raise IllegalPlayException("Can't call the face up card after it's flipped")
+				self._trump = call_result
 				self._caller = p
+				if call[1] == "alone":
+					#They went alone
+					#this is redundant
+					self._inactives.append(self._teammate_for(p))
+					self._teammate_for(p).active = False
+					if self.playersOrder[0]==self._teammate_for(p):
+						#The afk is first. rotate
+						self._rotate()
+						#This implements left of the dealer
+					if printOutput:
+						print p.name, ":", self._trump, "  Alone!"
+				else:
+					#The did not go alone
+					if printOutput:
+						print p.name, ":", self._trump
 				return
-			#This is a legal pass
-			if printOutput:
-				print p.name, ":", self._trump
+
 
 	def score_hand(self):
 		calling_team_num = self.team_num_for(self._caller)
