@@ -135,7 +135,8 @@ class Game:
 		self._top_card = self.__deck.pop()
 
 	def call_trump(self, printOutput):
-		print "top card", self._top_card
+		if printOutput:
+			print "top card", self._top_card
 		for index in range(4):
 			p=self.playersOrder[index]
 			call_result = p.call(self._top_card)
@@ -201,7 +202,6 @@ class Game:
 					if printOutput:
 						print p.name, ":", self._trump
 				return
-
 
 	def score_hand(self):
 		calling_team_num = self.team_num_for(self._caller)

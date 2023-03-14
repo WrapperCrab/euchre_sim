@@ -22,28 +22,11 @@ def best_card(cards, trump=None, lead=None):
 			if lead == c[1]:#This is lead
 				val += 10
 			# else:#this card is not special
-
-
-		#Old function that I don't like
-		# if lead == c[1]:
-		# 	val *= 10
-		# if trump == c[1]:
-		# 	val *= 100
-		# 	if c[0] == 'J':
-		# 		val = val*10 + 5
-		# if trump == same_color(c[1]) and c[0] == 'J':
-		# 	val = val*1000 + 3
-
 		val_map[c] = val
-
 	return sorted(val_map.items(), key=lambda x: x[1], reverse=True)[0][0]
 
 def same_color(suit):
-	""" Return other suit of the same same color
-
-	I'm embarrased I had to write this function.
-
-	"""
+	""" Return other suit of the same same color"""
 	if suit == 's':
 		return 'c'
 	elif suit == 'c':
@@ -52,14 +35,6 @@ def same_color(suit):
 		return 'h'
 	elif suit == 'h':
 		return 'd'
-
-# Should be unit tests
-# print best_card(['Qs', 'As'])
-# print best_card(['As', 'Jh'], 'h')
-# print best_card(['Jc', 'Js'], 'h', 's')
-# print best_card(['Jc', 'Js', 'Jh'], 'h', 's')
-# print best_card(['Jc', 'Js', 'Jh', 'Jd'], 'h', 's')
-# print best_card(['Jc', 'Js', 'Ah', 'Jd'], 'h', 's')
 
 def getCardSuit(card, trump):#I wrote this
 	"""return the true suit of the card"""

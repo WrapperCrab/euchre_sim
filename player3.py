@@ -49,7 +49,7 @@ def call(self, top_card):
 	wouldBeTrump = top_card[1]
 
 	if position == 0:
-		if best_card(myHand.append(top_card), wouldBeTrump,None)==top_card:
+		if utils.best_card(myHand.append(top_card), wouldBeTrump,None)==top_card:
 			cp +=-1
 	elif position == 1:
 		if top_card[0]=='J':
@@ -57,7 +57,7 @@ def call(self, top_card):
 		elif top_card[0]=='A':
 			cp+=.2
 	elif position == 2:
-		if best_card(myHand.append(top_card), wouldBeTrump,None)==top_card:
+		if utils.best_card(myHand.append(top_card), wouldBeTrump,None)==top_card:
 			cp +=-1
 	else: #(position==3)
 		myHand = myHand.append(top_card).remove(discard())

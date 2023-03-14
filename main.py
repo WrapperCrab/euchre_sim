@@ -9,11 +9,6 @@ import copy
 
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
-	"test rotate array"
-	"""	arr1 = [1,2,3,4]
-	arr1 = arr1[1:] + arr1[:1]
-	print(arr1)"""
-
 	"Test Game"
 	p1 = Player("Henry")
 	p3 = Player("Paul")
@@ -31,12 +26,11 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 	team1Score = 0
 	team1aScore = 0
 
-	numGames = 1#Number of games played
-	neededScore = 1#Number of points needed to win a game
-	printOutput = True#Whether or not each hand is printed in the console
+	numGames = 100#Number of games played
+	neededScore = 10#Number of points needed to win a game
+	printOutput = False#Whether or not each hand is printed in the console
 
 	for index in range(numGames):
-
 		randSeed = randrange(-10000,10000)
 
 		gTest = Game([p1, p2, p3, p4])
