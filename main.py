@@ -9,8 +9,12 @@ import copy
 
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
-	"Test Game"
+	"test rotate array"
+	"""	arr1 = [1,2,3,4]
+	arr1 = arr1[1:] + arr1[:1]
+	print(arr1)"""
 
+	"Test Game"
 	p1 = Player("Henry")
 	p3 = Player("Paul")
 

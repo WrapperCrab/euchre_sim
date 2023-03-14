@@ -46,13 +46,9 @@ class Player:
 
 		"""
 		#return True#always call (lol)
-		#if in position 3, go alone
-		position = 0
-		for index in range(4):
-			if self.game.playersOrder[index] == self:
-				position = index
-
-		if position==3:
+		#if in position 2, go alone
+		position = self.game.get_player_position(self)
+		if position==2:
 			return "alone"
 
 		#else, pass

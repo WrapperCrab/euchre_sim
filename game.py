@@ -19,8 +19,6 @@ class Game:
 		self._inactives = [] # current inactive player for the hand ("alone")
 		for p in self.playersOrder:
 			p.game = self
-
-			# set both player attr and position dict for security
 			if p == self.playersOrder[0] or p== self.playersOrder[2]:
 				p.team_num = 1
 				self._teams[p]=1
@@ -40,8 +38,6 @@ class Game:
 		seed(randSeed)
 		#Select a random dealer
 		self.dealerIndex = randrange(4)
-		print(self.dealerIndex)
-
 		while (self._game_score[1] < neededScore and self._game_score[2] < neededScore):
 			self.dealerIndex = (self.dealerIndex+1)%4#Go to the next dealer
 			self.play_hand(printOutput)
@@ -75,7 +71,8 @@ class Game:
 		for _ in xrange(5):
 			trick = []
 
-			for p in self.playersOrder:
+			for index in range(4):
+				p = self.playersOrder[index]
 				card = p.action(trick)
 				if p not in self._inactives:
 					if len(trick) > 0 and p.has_suit(utils.getCardSuit(trick[0],self._trump), self._trump) and (utils.getCardSuit(trick[0],self._trump)!=utils.getCardSuit(card,self._trump)):
@@ -92,7 +89,7 @@ class Game:
 			winning_player = self.playersOrder[trick.index(winning_card)]
 			self._tricks_score[self._teams[winning_player]] += 1
 
-			self._rotate_until_first(winning_player)#!!!This is incorrect anyway
+			self._rotate_until_first(winning_player)
 			if printOutput:
 				print winning_player.name, winning_card, trick
 
@@ -115,7 +112,8 @@ class Game:
 
 		#Deal~3232 2323
 		parityDeal = 0
-		for p in self.playersOrder:
+		for index in range(4):
+			p=self.playersOrder[index]
 			cardsToDeal = 0
 			if parityDeal%2==0:
 				cardsToDeal = 3
@@ -126,14 +124,8 @@ class Game:
 				card = self.__deck.pop()
 				self._hands[p].append(card)
 
-		# euchre style dealing, for true authenticity
-		#What the fuck you talkin about my man? You'd get beat up if you dealt like this
-		# for p in self.playersOrder:
-		# 	for _ in xrange(randrange(1,5)):
-		# 		card = self.__deck.pop()
-		# 		self._hands[p].append(card) # Game
-
-		for p in self.playersOrder:
+		for index in range(4):
+			p=self.playersOrder[index]
 			for _ in xrange(5-len(self._hands[p])):
 				card = self.__deck.pop()
 				self._hands[p].append(card) # Game
@@ -141,11 +133,13 @@ class Game:
 		self._top_card = self.__deck.pop()
 
 	def call_trump(self, printOutput):
-		for p in self.playersOrder:
+		for index in range(4):
+			p=self.playersOrder[index]
+			print p.name
 			call_result = p.call(self._top_card)
 			if call_result != False:
+				#The suit has been called
 				self._trump = self._top_card[1]
-
 				self._hands[self._dealer].append(self._top_card) # Game
 				discard = self._dealer.discard()
 				self._hands[self._dealer].remove(discard) # Game
@@ -161,12 +155,15 @@ class Game:
 				# tell players and game who called
 				self._caller = p
 				return
+
+			#!!!but this happens only if call_result ==false. Thus, trump is undecided...
 			if printOutput:
-				print p.name, ":", self._trump
+				print p.name, ":" #, self._trump
 		if printOutput:
 			self.print_hand()
 
-		for p in self.playersOrder:
+		for index in range(4):
+			p=self.playersOrder[index]
 			call_result = p.call2(self._top_card)
 
 			if call_result not in SUITS and p == self._dealer:
@@ -202,12 +199,14 @@ class Game:
 	def print_hand(self):
 		""" Print hand for each player """
 		print "------------------- Trump:", self._trump, "---------------"
-		for p in self.playersOrder:
+		print [self.playersOrder[0].name]
+		for index in range(4):
+			p=self.playersOrder[index]
+
 			if p not in self._inactives:
-				#!!!print actual positions
-				print "0", p.name, self._hands[p]
+				print self.get_player_position(p), p.name, self._hands[p]
 			else:
-				print "0", p.name, "*** asleep ***"
+				print self.get_player_position(p), p.name, "*** asleep ***"
 
 	def _teammate_for(self, thisPlayer):
 		""" Return teammate of player """
@@ -217,11 +216,10 @@ class Game:
 
 	def _rotate(self):
 		""" Rotate players in self.playersOrder so that player after dealer becomes dealer """
-		self.playersOrder = self.playersOrder[1:] + self.playersOrder[:1]#!!!This should work, but it's acting funky
+		self.playersOrder = self.playersOrder[1:] + self.playersOrder[:1]
 
 	def _rotate_until_dealer(self, dealerIndex):
 		""" Rotate players in self.playersOrder until dealer is in the dealer position again"""
-		print(dealerIndex)
 		while self.playersOrder[3] != self._players[dealerIndex]:
 			self._rotate()
 
@@ -246,6 +244,14 @@ class Game:
 	def is_player_active(self, player):
 		""" Return True if player is active this hand """
 		return player not in self._inactives
+
+	def get_player_position(self,player):
+		playerIndex = 0
+		for index in range(4):
+			if self.playersOrder[index]==player:
+				playerIndex = index
+				break
+		return ((3+(playerIndex-self.dealerIndex))%4)
 
 	@property
 	def top_card(self):
