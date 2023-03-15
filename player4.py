@@ -26,7 +26,7 @@ class Player4(Player3):
         trumpCards = utils.getCardsOfSuit(cards,trump,trump)
         if len(trumpCards)==0:
             #We have no trump. Case 2
-            outrides = utils.getLikelyOutrides(cards)#!!!
+            outrides = utils.getLikelyOutrides(cards,trump)
             if len(outrides)==0:
                 return utils.worstCard(cards,trump,None)
             else:
@@ -46,7 +46,7 @@ class Player4(Player3):
                 return utils.best_card(cards, trump, None)
             else:
                 #find likely outrides
-                outrides = utils.getLikelyOutrides(cards)
+                outrides = utils.getLikelyOutrides(cards,trump)
                 if len(outrides)!=0:
                     return utils.best_card(outrides,trump,None)
                 else:
@@ -57,7 +57,7 @@ class Player4(Player3):
                         return voidCard
                     # voiding is impossible/unnecessary
                     # !!!I am not sure what the best thing to do here would be! I should test for different things
-                    return utils.best_card(cards,trump, None)
+                    return utils.worstCard(cards,trump, None)
                     #consider playing low trump if partner called
 
     def follow(self,trick,playersInTrick):
@@ -70,7 +70,8 @@ class Player4(Player3):
             # We must follow suit
             #case 3
             legalCards = utils.getLegalCards(cards, trump, ledSuit)
-            if utils.myTeamIsLikelyToWin():
+            caller = self.game._caller
+            if utils.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
                 return utils.worstCard(legalCards,trump,ledSuit)
             else:#our team is not likely to win
                 likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick,playersInTrick,team,trump,legalCards)
@@ -89,7 +90,8 @@ class Player4(Player3):
                 return utils.worstCard(cards,trump,ledSuit)
             else:
                 #case 4
-                if utils.myTeamIsLikelyToWin():
+                caller = self.game._caller
+                if utils.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
                     voidCard = utils.getVoidCard(cards,trump)
                     if voidCard!=None:
                         return voidCard

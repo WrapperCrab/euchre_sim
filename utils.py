@@ -66,6 +66,8 @@ def myTeamIsWinning(trick, playersInTrick, team,trump):
 		ledSuit = getCardSuit(trick[0], trump)
 		winningCard = best_card(trick, trump, ledSuit)
 		#find which team this card belongs to
+		if len(trick)!=len(playersInTrick):
+			print("trick and playersInTrick are different lengths")
 		winningPlayer = playersInTrick[trick.index(winningCard)]
 		if winningPlayer in team:
 			return True
@@ -145,16 +147,16 @@ def getLikelyOutrides(cards,trump):
 				ace = utils.findCardInCards(cardsOfSuit, 'A', suit)
 				if ace != None:
 					outrides.append(ace)
-			if len(cardsOfSuit) <= 2:
+			if len(cardsOfSuit) == 1:
 				# play the king
 				king = utils.findCardInCards(cardsOfSuit, 'K', suit)
 				if king != None:
 					outrides.append(king)
-			if len(cardsOfSuit) == 1:  # !!!highly doubtful that this is a good idea
-				# play the queen
-				queen = utils.findCardInCards(cardsOfSuit, 'Q', suit)
-				if queen != None:
-					outrides.append(queen)
+#			if len(cardsOfSuit) == 1:  # !!!highly doubtful that this is a good idea
+#				# play the queen
+#				queen = utils.findCardInCards(cardsOfSuit, 'Q', suit)
+#				if queen != None:
+#					outrides.append(queen)
 	otherSuit = utils.same_color(trump)
 	cardsOfOther = utils.getCardsOfSuit(cards, otherSuit, trump)
 	if len(cardsOfOther) > 0:
@@ -163,32 +165,66 @@ def getLikelyOutrides(cards,trump):
 			ace = utils.findCardInCards(cardsOfOther, 'A', otherSuit)
 			if ace != None:
 				outrides.append(ace)
-		if len(cardsOfOther) == 1:
-			# play the king
-			king = utils.findCardInCards(cardsOfOther, 'K', otherSuit)
-			if king != None:
-				outrides.append(king)
+#		if len(cardsOfOther) == 1:
+#			# play the king
+#			king = utils.findCardInCards(cardsOfOther, 'K', otherSuit)
+#			if king != None:
+#				outrides.append(king)
 	return outrides
 
-def myTeamIsLikelyToWin(trick,playersInTrick,team,trump):
+def myTeamIsLikelyToWin(trick,playersInTrick,team,trump,player,caller):
 	#!!!must consider strength of partner's card and who all has gone
-	if utils.myTeamIsWinning(trick,playersInTrick,team,trump):
-		#we are currently winning
-		return True
+	#has our partner played yet?
+	partner = None
+	for person in team:
+		if person!=player:
+			partner = person
+	if partner in playersInTrick:
+		#partner has played
+		if utils.myTeamIsWinning(trick, playersInTrick, team, trump):
+			# we are currently winning
+			return True#!!!
+		else:
+			# we are currently losing
+			return False
 	else:
-		#we are currently losing
-		return False
+		#partner has not played
+		ledCard = trick[0]
+		if utils.getCardSuit(ledCard,trump)==trump:
+			#foe led trump
+			if caller==partner:
+				#partner called
+				return True
+			else:
+				#partner did not call
+				return False
+		else:
+			if (ledCard[0]=='9') or (ledCard[0]=='T') or (ledCard[0]=='J') or (ledCard[0]=='Q'):
+				return True#!!!
+			else:
+				return False
 
-def getCardsThatAreLikelyToWin(trick,playersInTrick,team,trump,cards):
+def getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,trump,cards):
 	ledSuit = utils.getCardSuit(trick[0], trump)
 	cardsThatWouldWin = []
+	bestCard = utils.best_card(trick)
 	for card in cards:
-		cardsCopy = copy.deepcopy(cards)
-		if card == best_card(cardsCopy.append(card), trump, ledSuit):
+		if card == best_card([card,bestCard], trump, ledSuit):
 			cardsThatWouldWin.append(card)
 	if len(cardsThatWouldWin) == 0:
 		# we cannot win
 		return []
 	else:
+		#if no one on the other team still has to go
+			#return cardsThatWouldWin
+		#if lead was trump
+			#if otherTeam called
+				#if the right is in cardsThatWouldWin
+					#return [right]
+				#else
+					#return []
+		#else
+
+
 		return cardsThatWouldWin  # !!!There is much more to consider here
 

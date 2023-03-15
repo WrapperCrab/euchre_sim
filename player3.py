@@ -32,7 +32,7 @@ class Player3(Player2):
             ledSuit = utils.getCardSuit(trick[0], trumpSuit)
             myPlays = utils.getLegalCards(myHand, trumpSuit, ledSuit)
             team = self.game._teams[self.game.team_num_for(self) - 1]
-            if utils.myTeamIsWinning(trick, trumpSuit, playersInTrick, team):  # Our team is winning
+            if utils.myTeamIsWinning(trick, playersInTrick, team, trumpSuit):  # Our team is winning
                 card_to_play = utils.worstCard(myPlays, trumpSuit, ledSuit)
             else:  # Our team is losing
                 cardToBeat = utils.best_card(trick, trumpSuit, ledSuit)
