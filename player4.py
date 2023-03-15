@@ -11,7 +11,7 @@ class Player4(Player3):
         #no voiding is possible/necessary
         return utils.worstCard(cards,trump,None)
 
-
+"""
     def action(self, trick, playersInTrick):
         #if first, plays highest off suit
         #else, same as Player2
@@ -68,7 +68,8 @@ class Player4(Player3):
                     else:  # We can win
                         return utils.worstCard(myPlaysThatWin, trump, ledSuit)
                         #!!!worstCard may be better here. May have to split into cases
-
+"""
+"""
     def lead(self):
         trump = self.game.trump
         cards = self.game.hand_for(self)
@@ -97,11 +98,11 @@ class Player4(Player3):
                         king = utils.findCardInCards(cardsOfSuit, 'K', suit)
                         if king != None:
                             return king
-                    """if len(cardsOfSuit) == 1:#!!!highly doubtful that this is a good idea
+                    if len(cardsOfSuit) == 1:#!!!highly doubtful that this is a good idea
                         # play the queen
                         queen = utils.findCardInCards(cardsOfSuit, 'Q', suit)
                         if queen != None:
-                            return queen"""
+                            return queen
             otherSuit = utils.same_color(trump)
             cardsOfOther = utils.getCardsOfSuit(cards, otherSuit, trump)
             if len(cardsOfOther) > 0:
@@ -110,11 +111,11 @@ class Player4(Player3):
                     ace = utils.findCardInCards(cardsOfOther, 'A', otherSuit)
                     if ace != None:
                         return ace
-                """if len(cardsOfOther) == 1:
+                if len(cardsOfOther) == 1:
                     # play the king
                     king = utils.findCardInCards(cardsOfOther, 'K', otherSuit)
                     if king != None:
-                        return king"""
+                        return king
         # We cannot play a card that will go all the way through
         # try to void in a suit
         voidCard = utils.getVoidCard(cards, trump)
@@ -124,4 +125,4 @@ class Player4(Player3):
         # !!!I am not sure what the best thing to do here would be! I should test for different things
         return utils.best_card(cards,trump, None)
         #consider playing low trump if partner called
-
+"""
