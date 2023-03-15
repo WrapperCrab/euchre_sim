@@ -105,13 +105,6 @@ def getGreenSuits(trump):
 	greenSuits.remove(utils.same_color(trump))
 	return greenSuits
 
-def findCardInCards(cards,value,suit):
-	for card in cards:
-		if card[0]==value:
-			if card[1]==suit:
-				return card
-	return None
-
 def getVoidCard(cards, trump):
 	cardsOfTrump = utils.getCardsOfSuit(cards, trump, trump)
 	if 0 < len(cardsOfTrump):  # we have trump, look to void in a suit
@@ -204,7 +197,7 @@ def myTeamIsLikelyToWin(trick,playersInTrick,team,trump,player,caller):
 			else:
 				return False
 
-def getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,trump,cards):
+def getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,caller,trump,cards):
 	ledSuit = utils.getCardSuit(trick[0], trump)
 	cardsThatWouldWin = []
 	bestCard = utils.best_card(trick)
@@ -214,17 +207,39 @@ def getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,trump,cards):
 	if len(cardsThatWouldWin) == 0:
 		# we cannot win
 		return []
-	else:
-		#if no one on the other team still has to go
-			#return cardsThatWouldWin
-		#if lead was trump
-			#if otherTeam called
-				#if the right is in cardsThatWouldWin
-					#return [right]
-				#else
-					#return []
-		#else
+	otherTeamStillHasToGo = False
+	for person in otherTeam:
+		if (person not in playersInTrick) and (person not in person.game._inactives):
+			#player has not gone and is not inactive
+			otherTeamStillHasToGo = True
+	if not otherTeamStillHasToGo:
+		#no one on the other team still has to go
+		return cardsThatWouldWin
+	#someone on the other team still has to go
+	if ledSuit == trump:
+		#lead was trump
+		if caller in otherTeam:
+			#other team called
+			right = utils.findCardInCards(cardsThatWouldWin,'J',trump)
+			if right!=None:
+				#this is the right
+				return [right]
+			return []
+		return cardsThatWouldWin#!!!
+	#ledSuit is not trump
+	ace = utils.findCardinCards(cardsThatWouldWin,'A',ledSuit)
+	if ace!=None:
+		return [ace]
+	if hasSuit(cardsThatWouldWin,trump,trump):
+		return cardsThatWouldWin
+	#We don't have shit
+	return [utils.best_card(cardsThatWouldWin,trump,ledSuit)]#low chance of working, but give it a try
 
 
-		return cardsThatWouldWin  # !!!There is much more to consider here
+def findCardinCards(cards, value, suit):
+	for card in cards:
+		if card[0] == value:
+			if card[1] == suit:
+				return card
+	return None
 

@@ -64,7 +64,9 @@ class Player4(Player3):
         trump = self.game.trump
         cards = self.game.hand_for(self)
         team = self.game._teams[self.game.team_num_for(self) - 1]
+        otherTeam = self.game._teams[self.game.team_num_for(self)%2]
         ledSuit = utils.getCardSuit(trick[0], trump)
+        caller = self.game._caller
 
         if utils.hasSuit(cards, trump, ledSuit):
             # We must follow suit
@@ -74,7 +76,7 @@ class Player4(Player3):
             if utils.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
                 return utils.worstCard(legalCards,trump,ledSuit)
             else:#our team is not likely to win
-                likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick,playersInTrick,team,trump,legalCards)
+                likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,caller,trump,legalCards)
                 if len(likelyToWinCards)==0:
                     #we can't win
                     return utils.worstCard(legalCards,trump,ledSuit)
@@ -90,7 +92,6 @@ class Player4(Player3):
                 return utils.worstCard(cards,trump,ledSuit)
             else:
                 #case 4
-                caller = self.game._caller
                 if utils.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
                     voidCard = utils.getVoidCard(cards,trump)
                     if voidCard!=None:
@@ -98,7 +99,7 @@ class Player4(Player3):
                     # no voiding is possible/necessary
                     return utils.worstCard(cards, trump, ledSuit)
                 else:#our team is not likely to win
-                    likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick, playersInTrick, team, trump, cards)
+                    likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick, playersInTrick, team, otherTeam, caller, trump, cards)
                     if len(likelyToWinCards) == 0:
                         # we can't win
                         voidCard = utils.getVoidCard(cards, trump)
