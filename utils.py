@@ -1,4 +1,4 @@
-import utils
+#import utils.utils as utils
 
 import copy
 
@@ -95,72 +95,75 @@ def worstCard(cards, trump, lead):#I could definitely merge this with best_card,
 def getCardsOfSuit(cards,suit, trump):
 	cardsOfSuit = []
 	for card in cards:
-		if utils.getCardSuit(card,trump)==suit:
+		if getCardSuit(card,trump)==suit:
 			cardsOfSuit.append(card)
 	return cardsOfSuit
 
 def getGreenSuits(trump):
 	greenSuits = ['d', 'h', 's', 'c']
 	greenSuits.remove(trump)
-	greenSuits.remove(utils.same_color(trump))
+	greenSuits.remove(same_color(trump))
 	return greenSuits
 
 def getVoidCard(cards, trump):
-	cardsOfTrump = utils.getCardsOfSuit(cards, trump, trump)
+	cardsOfTrump = getCardsOfSuit(cards, trump, trump)
 	if 0 < len(cardsOfTrump):  # we have trump, look to void in a suit
-		greenSuits = utils.getGreenSuits(trump)
+		greenSuits = getGreenSuits(trump)
 		for suit in greenSuits:
-			cardsOfSuit = utils.getCardsOfSuit(cards, suit, trump)
+			cardsOfSuit = getCardsOfSuit(cards, suit, trump)
 			if len(cardsOfSuit) == 1:  # we can void in this suit
 				return cardsOfSuit[0]
-		otherSuit = utils.same_color(trump)
-		cardsOfOtherSuit = utils.getCardsOfSuit(cards, otherSuit, trump)
+		otherSuit = same_color(trump)
+		cardsOfOtherSuit = getCardsOfSuit(cards, otherSuit, trump)
 		if len(cardsOfOtherSuit) == 1:
 			return cardsOfOtherSuit[0]
 	return None
 
 def hasSuit(cards,trump,suit):
 	for card in cards:
-		if utils.getCardSuit(card,trump)==suit:
+		if getCardSuit(card,trump)==suit:
 			return True
 	return False
+
+
+
 
 
 def getLikelyOutrides(cards,trump):
 	#!!!this function will need to be updated and improved
 	# find offsuits that can go all the way through
 	outrides = []
-	greenSuits = utils.getGreenSuits(trump)
+	greenSuits = getGreenSuits(trump)
 	for suit in greenSuits:
-		cardsOfSuit = utils.getCardsOfSuit(cards, suit, trump)
+		cardsOfSuit = getCardsOfSuit(cards, suit, trump)
 		#!!!this does not take into account how far we are into the round
 		if len(cardsOfSuit) > 0:
 			if len(cardsOfSuit) <= 3:
 				# play the ace
-				ace = utils.findCardInCards(cardsOfSuit, 'A', suit)
+				ace = findCardInCards(cardsOfSuit, 'A', suit)
 				if ace != None:
 					outrides.append(ace)
 			if len(cardsOfSuit) == 1:
 				# play the king
-				king = utils.findCardInCards(cardsOfSuit, 'K', suit)
+				king = findCardInCards(cardsOfSuit, 'K', suit)
 				if king != None:
 					outrides.append(king)
 #			if len(cardsOfSuit) == 1:  # !!!highly doubtful that this is a good idea
 #				# play the queen
-#				queen = utils.findCardInCards(cardsOfSuit, 'Q', suit)
+#				queen = findCardInCards(cardsOfSuit, 'Q', suit)
 #				if queen != None:
 #					outrides.append(queen)
-	otherSuit = utils.same_color(trump)
-	cardsOfOther = utils.getCardsOfSuit(cards, otherSuit, trump)
+	otherSuit = same_color(trump)
+	cardsOfOther = getCardsOfSuit(cards, otherSuit, trump)
 	if len(cardsOfOther) > 0:
 		if len(cardsOfOther) <= 2:
 			# play the ace
-			ace = utils.findCardInCards(cardsOfOther, 'A', otherSuit)
+			ace = findCardInCards(cardsOfOther, 'A', otherSuit)
 			if ace != None:
 				outrides.append(ace)
 #		if len(cardsOfOther) == 1:
 #			# play the king
-#			king = utils.findCardInCards(cardsOfOther, 'K', otherSuit)
+#			king = findCardInCards(cardsOfOther, 'K', otherSuit)
 #			if king != None:
 #				outrides.append(king)
 	return outrides
@@ -174,7 +177,7 @@ def myTeamIsLikelyToWin(trick,playersInTrick,team,trump,player,caller):
 			partner = person
 	if partner in playersInTrick:
 		#partner has played
-		if utils.myTeamIsWinning(trick, playersInTrick, team, trump):
+		if myTeamIsWinning(trick, playersInTrick, team, trump):
 			# we are currently winning
 			return True#!!!
 		else:
@@ -183,7 +186,7 @@ def myTeamIsLikelyToWin(trick,playersInTrick,team,trump,player,caller):
 	else:
 		#partner has not played
 		ledCard = trick[0]
-		if utils.getCardSuit(ledCard,trump)==trump:
+		if getCardSuit(ledCard,trump)==trump:
 			#foe led trump
 			if caller==partner:
 				#partner called
@@ -197,10 +200,16 @@ def myTeamIsLikelyToWin(trick,playersInTrick,team,trump,player,caller):
 			else:
 				return False
 
+def findCardInCards(cards, value, suit):
+	for card in cards:
+		if card[0]==value and card[1]==suit:
+			return card
+	return None
+
 def getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,caller,trump,cards):
-	ledSuit = utils.getCardSuit(trick[0], trump)
+	ledSuit = getCardSuit(trick[0], trump)
 	cardsThatWouldWin = []
-	bestCard = utils.best_card(trick)
+	bestCard = best_card(trick)
 	for card in cards:
 		if card == best_card([card,bestCard], trump, ledSuit):
 			cardsThatWouldWin.append(card)
@@ -220,26 +229,20 @@ def getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,caller,trump,
 		#lead was trump
 		if caller in otherTeam:
 			#other team called
-			right = utils.findCardInCards(cardsThatWouldWin,'J',trump)
+			right = findCardInCards(cardsThatWouldWin,'J',trump)
 			if right!=None:
 				#this is the right
 				return [right]
 			return []
 		return cardsThatWouldWin#!!!
 	#ledSuit is not trump
-	ace = utils.findCardinCards(cardsThatWouldWin,'A',ledSuit)
+	ace = findCardInCards(cardsThatWouldWin, 'A', ledSuit)
 	if ace!=None:
 		return [ace]
 	if hasSuit(cardsThatWouldWin,trump,trump):
 		return cardsThatWouldWin
 	#We don't have shit
-	return [utils.best_card(cardsThatWouldWin,trump,ledSuit)]#low chance of working, but give it a try
+	return [best_card(cardsThatWouldWin,trump,ledSuit)]#low chance of working, but give it a try
 
 
-def findCardinCards(cards, value, suit):
-	for card in cards:
-		if card[0] == value:
-			if card[1] == suit:
-				return card
-	return None
 
