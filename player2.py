@@ -1,5 +1,5 @@
 import utils
-from player1 import Player1
+from player1B import Player1B
 
 class Player2(Player1):
 	def action(self, trick, playersInTrick):
