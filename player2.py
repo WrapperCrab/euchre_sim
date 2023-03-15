@@ -1,7 +1,7 @@
 import utils
 from player1B import Player1B
 
-class Player2(Player1):
+class Player2(Player1B):
 	def action(self, trick, playersInTrick):
 		#Play a card in trick
 		card_to_play = None

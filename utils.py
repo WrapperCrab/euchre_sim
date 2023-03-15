@@ -88,7 +88,7 @@ def worstCard(cards, trump, lead):#I could definitely merge this with best_card,
 		val_map[c] = val
 	return sorted(val_map.items(), key=lambda x: x[1], reverse=False)[0][0]
 
-def cardsOfSuit(cards,suit, trump):
+def getCardsOfSuit(cards,suit, trump):
 	cardsOfSuit = []
 	for card in cards:
 		if utils.getCardSuit(card,trump)==suit:
@@ -108,16 +108,22 @@ def findCardInCards(cards,value,suit):
 				return card
 	return None
 
-def getVoidCard(self, cards, trump):
+def getVoidCard(cards, trump):
 	cardsOfTrump = utils.getCardsOfSuit(cards, trump, trump)
 	if 0 < len(cardsOfTrump):  # we have trump, look to void in a suit
 		greenSuits = utils.getGreenSuits(trump)
 		for suit in greenSuits:
-			cardsOfSuit = utils.cardsOfSuit(cards, suit, trump)
+			cardsOfSuit = utils.getCardsOfSuit(cards, suit, trump)
 			if len(cardsOfSuit) == 1:  # we can void in this suit
 				return cardsOfSuit[0]
 		otherSuit = utils.same_color(trump)
-		cardsOfOtherSuit = utils.cardsOfSuit(cards, otherSuit, trump)
+		cardsOfOtherSuit = utils.getCardsOfSuit(cards, otherSuit, trump)
 		if len(cardsOfOtherSuit) == 1:
 			return cardsOfOtherSuit[0]
 	return None
+
+def hasSuit(cards,trump,suit):
+	for card in cards:
+		if utils.getCardSuit(card,trump)==suit:
+			return True
+	return False

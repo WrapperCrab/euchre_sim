@@ -5,6 +5,7 @@ from player1 import Player1
 from player1B import Player1B
 from player2 import Player2
 from player3 import Player3
+from player4 import Player4
 from random import randrange
 
 import copy
@@ -12,23 +13,23 @@ import copy
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
-	p1 = Player1B("Henry")
-	p3 = Player1B("Paul")
+	p1 = Player4("Henry")
+	p3 = Player4("Paul")
 
-	p2 = Player1("Alex")
-	p4 = Player1("Sarah")
+	p2 = Player3("Alex")
+	p4 = Player3("Sarah")
 
 	"Control Game"
-	p1a = Player1("HenryA")
-	p3a = Player1("PaulA")
+	p1a = Player3("HenryA")
+	p3a = Player3("PaulA")
 
-	p2a = Player1("AlexA")
-	p4a = Player1("SarahA")
+	p2a = Player3("AlexA")
+	p4a = Player3("SarahA")
 
 	team1Score = 0
 	team1aScore = 0
 
-	numGames = 1000#Number of games played
+	numGames = 100#Number of games played
 	neededScore = 10#Number of points needed to win a game
 	printOutput = False#Whether or not each hand is printed in the console
 
