@@ -105,20 +105,6 @@ def getGreenSuits(trump):
 	greenSuits.remove(same_color(trump))
 	return greenSuits
 
-def getVoidCard(cards, trump):
-	cardsOfTrump = getCardsOfSuit(cards, trump, trump)
-	if 0 < len(cardsOfTrump):  # we have trump, look to void in a suit
-		greenSuits = getGreenSuits(trump)
-		for suit in greenSuits:
-			cardsOfSuit = getCardsOfSuit(cards, suit, trump)
-			if len(cardsOfSuit) == 1:  # we can void in this suit
-				return cardsOfSuit[0]
-		otherSuit = same_color(trump)
-		cardsOfOtherSuit = getCardsOfSuit(cards, otherSuit, trump)
-		if len(cardsOfOtherSuit) == 1:
-			return cardsOfOtherSuit[0]
-	return None
-
 def hasSuit(cards,trump,suit):
 	for card in cards:
 		if getCardSuit(card,trump)==suit:

@@ -26,7 +26,7 @@ class Player4(Player3):
         trumpCards = utils.getCardsOfSuit(cards,trump,trump)
         if len(trumpCards)==0:
             #We have no trump. Case 2
-            outrides = utils.getLikelyOutrides(cards,trump)
+            outrides = self.getLikelyOutrides(cards,trump)
             if len(outrides)==0:
                 return utils.worstCard(cards,trump,None)
             else:
@@ -46,7 +46,7 @@ class Player4(Player3):
                 return utils.best_card(cards, trump, None)
             else:
                 #find likely outrides
-                outrides = utils.getLikelyOutrides(cards,trump)
+                outrides = self.getLikelyOutrides(cards,trump)
                 if len(outrides)!=0:
                     return utils.best_card(outrides,trump,None)
                 else:
@@ -73,10 +73,10 @@ class Player4(Player3):
             #case 3
             legalCards = utils.getLegalCards(cards, trump, ledSuit)
             caller = self.game._caller
-            if utils.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
+            if self.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
                 return utils.worstCard(legalCards,trump,ledSuit)
             else:#our team is not likely to win
-                likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,caller,trump,legalCards)
+                likelyToWinCards = self.getCardsThatAreLikelyToWin(trick,playersInTrick,team,otherTeam,caller,trump,legalCards)
                 if len(likelyToWinCards)==0:
                     #we can't win
                     return utils.worstCard(legalCards,trump,ledSuit)
@@ -92,14 +92,14 @@ class Player4(Player3):
                 return utils.worstCard(cards,trump,ledSuit)
             else:
                 #case 4
-                if utils.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
+                if self.myTeamIsLikelyToWin(trick,playersInTrick,team,trump,self,caller):
                     voidCard = utils.getVoidCard(cards,trump)
                     if voidCard!=None:
                         return voidCard
                     # no voiding is possible/necessary
                     return utils.worstCard(cards, trump, ledSuit)
                 else:#our team is not likely to win
-                    likelyToWinCards = utils.getCardsThatAreLikelyToWin(trick, playersInTrick, team, otherTeam, caller, trump, cards)
+                    likelyToWinCards = self.getCardsThatAreLikelyToWin(trick, playersInTrick, team, otherTeam, caller, trump, cards)
                     if len(likelyToWinCards) == 0:
                         # we can't win
                         voidCard = utils.getVoidCard(cards, trump)
@@ -111,7 +111,7 @@ class Player4(Player3):
                         return utils.worstCard(likelyToWinCards, trump, ledSuit)
 
     def getCardsThatAreLikelyToWin(self, trick,playersInTrick,team,otherTeam,caller,trump,cards):
-        ledSuit = self.getCardSuit(trick[0], trump)
+        ledSuit = utils.getCardSuit(trick[0], trump)
         cardsThatWouldWin = []
         bestCard = utils.best_card(trick)
         for card in cards:
@@ -157,7 +157,7 @@ class Player4(Player3):
                 partner = person
         if partner in playersInTrick:
             #partner has played
-            if self.myTeamIsWinning(trick, playersInTrick, team, trump):
+            if utils.myTeamIsWinning(trick, playersInTrick, team, trump):
                 # we are currently winning
                 return True#!!!
             else:

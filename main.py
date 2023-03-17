@@ -6,18 +6,28 @@ from player1B import Player1B
 from player2 import Player2
 from player3 import Player3
 from player4 import Player4
+from player4B import Player4B
 from random import randrange
+
+from playerTest import PlayerTest
 
 import copy
 
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
-	p1 = Player4("Henry")
-	p3 = Player4("Paul")
+	p1 = Player4B("Henry")
+	p3 = Player4B("Paul")
 
 	p2 = Player3("Alex")
 	p4 = Player3("Sarah")
+
+	"Second Test Game"
+	p1t = PlayerTest("HenryT")
+	p3t = PlayerTest("PaulT")
+
+	p2t = Player3("AlexT")
+	p4t = Player3("SarahT")
 
 	"Control Game"
 	p1a = Player3("HenryA")
@@ -27,6 +37,7 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 	p4a = Player3("SarahA")
 
 	team1Score = 0
+	team1tScore = 0
 	team1aScore = 0
 
 	numGames = 100#Number of games played
@@ -40,8 +51,12 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 		gTest = Game([p1, p2, p3, p4])
 		team1Score+=gTest.play_game(neededScore, randSeed, printOutput)
 
+		gTest2 = Game([p1t, p2t, p3t, p4t])
+		team1tScore+=gTest2.play_game(neededScore, randSeed, printOutput)
+
 		gControl = Game([p1a, p2a, p3a, p4a])
 		team1aScore+=gControl.play_game(neededScore, randSeed, printOutput)
 
 	print "team 1 won ",team1Score," games out of ", numGames
+	print "team 1t won ",team1tScore," games out of ", numGames
 	print "team 1a won ",team1aScore," games out of ", numGames
