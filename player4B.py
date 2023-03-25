@@ -51,6 +51,9 @@ class Player4B(Player3):
                     myPlaysThatWin.append(card)
             if not myPlaysThatWin:  # We cannot win
                 #try to void in a suit
+                voidCard = self.getVoidCard(legalCards, trumpSuit)
+                if (voidCard != None) and (voidCard[0] != 'A'):  # don't discard lone aces
+                    return voidCard
                 # no voiding is possible/necessary
                 return utils.worstCard(legalCards, trumpSuit, ledSuit)
             else:  # We can win

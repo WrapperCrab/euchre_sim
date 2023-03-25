@@ -101,19 +101,17 @@ class PlayerTest(Player3):
         outrides = []
         greenSuits = utils.getGreenSuits(trump)
         numCards = len(cards)
-        if numCards>=4:
+        if numCards>=1:
             for suit in greenSuits:
-                if suit not in self.ledSuits:
-                    #don't lead suits that have already been led
+                if suit not in self.ledSuits:#don't lead suits that have already been led
                     cardsOfSuit = utils.getCardsOfSuit(cards, suit, trump)
-                    #!!!this does not take into account how far we are into the round
                     if len(cardsOfSuit) > 0:
-                        if len(cardsOfSuit) <= .4*float(numCards):
+                        if len(cardsOfSuit) <= 2:
                             # play the ace
                             ace = utils.findCardInCards(cardsOfSuit, 'A', suit)
                             if ace != None:
                                 outrides.append(ace)
-                        if len(cardsOfSuit) <= .2*float(numCards):
+                        if len(cardsOfSuit) <= 1:
                             # play the king
                             king = utils.findCardInCards(cardsOfSuit, 'K', suit)
                             if king != None:
@@ -128,7 +126,7 @@ class PlayerTest(Player3):
                 #don't lead a suit that has already been led
                 cardsOfNext = utils.getCardsOfSuit(cards, nextSuit, trump)
                 if len(cardsOfNext) > 0:
-                    if len(cardsOfNext) <= .4*float(numCards):
+                    if len(cardsOfNext) <= 2:
                         # play the ace
                         ace = utils.findCardInCards(cardsOfNext, 'A', nextSuit)
                         if ace != None:
