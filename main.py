@@ -7,6 +7,7 @@ from player2 import Player2
 from player3 import Player3
 from player4 import Player4
 from player4B import Player4B
+from player5 import Player5
 from random import randrange
 
 from playerTest import PlayerTest
@@ -23,24 +24,24 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 	#p4 = Player3("Sarah")
 
 	"Second Test Game"
-	p1t = Player4B("HenryT")
-	p3t = Player4B("PaulT")
+	p1t = Player5("HenryT")
+	p3t = Player5("PaulT")
 
-	p2t = Player3("AlexT")
-	p4t = Player3("SarahT")
+	p2t = Player4B("AlexT")
+	p4t = Player4B("SarahT")
 
 	"Control Game"
-	p1a = Player3("HenryA")
-	p3a = Player3("PaulA")
+	p1a = Player4B("HenryA")
+	p3a = Player4B("PaulA")
 
-	p2a = Player3("AlexA")
-	p4a = Player3("SarahA")
+	p2a = Player4B("AlexA")
+	p4a = Player4B("SarahA")
 
 	team1Score = 0
 	team1tScore = 0
 	team1aScore = 0
 
-	numGames = 5000#Number of games played
+	numGames = 100#Number of games played
 	neededScore = 10#Number of points needed to win a game
 	printOutput = False#Whether or not each hand is printed in the console
 

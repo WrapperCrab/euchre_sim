@@ -105,6 +105,9 @@ def getGreenSuits(trump):
 	greenSuits.remove(same_color(trump))
 	return greenSuits
 
+def getSuits():
+	return ['d', 'h', 's', 'c']
+
 def hasSuit(cards,trump,suit):
 	for card in cards:
 		if getCardSuit(card,trump)==suit:
