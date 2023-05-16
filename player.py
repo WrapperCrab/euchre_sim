@@ -14,7 +14,7 @@ class Player:
 		if len(trick) == 0:
 			#we are first
 			return self.game.hand_for(self)[0]#first card in hand
-		else:#We are not first, there is a lead suit
+		else:#We are not first, there is a led suit
 			ledSuit = utils.getCardSuit(trick[0],self.game.trump)
 			for card in self.game.hand_for(self):
 				cardSuit = utils.getCardSuit(card,self.game.trump)
@@ -53,6 +53,23 @@ class Player:
 		winner_position - position of winner of trick
 		lead_position - position of player who led trick, used to tell who played what
 		"""
+		pass
+
+	def endCall1(self,trumpDecided,callPosition,goingAlone):
+		#called when the first round of calls ends. All relevant info is within parameters of this call
+		pass
+
+	def endCall2(self,callPosition,goingAlone):
+		#called when the second round of calls ends
+		pass
+
+	def endTrick(self,winPosition,trick):
+		#called when a trick ends
+		pass
+
+	def endRound(self):
+		#called when a round ends
+		#idea is to use this to reset variables
 		pass
 
 	def has_suit(self, suit, trump):#the original function did not consider the left. I'm sensing a pattern

@@ -2,62 +2,47 @@ import utils
 from game import Game
 from player import Player
 from player1 import Player1
-from player1B import Player1B
 from player2 import Player2
-from player3 import Player3
-from player4 import Player4
-from player4B import Player4B
-from player5 import Player5
+
 from random import randrange
 
-from playerTest import PlayerTest
 
 import copy
 
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
-	#p1 = PlayerTest("Henry")
-	#p3 = PlayerTest("Paul")
+	p1 = Player2("Henry")
+	p3 = Player2("Paul")
+	#set local strategies
+	p1.callToLead = True
+	p3.callToLead = True
 
-	#p2 = Player3("Alex")
-	#p4 = Player3("Sarah")
-
-	"Second Test Game"
-	p1t = Player5("HenryT")
-	p3t = Player5("PaulT")
-
-	p2t = Player4B("AlexT")
-	p4t = Player4B("SarahT")
+	p2 = Player1("Alex")
+	p4 = Player1("Sarah")
 
 	"Control Game"
-	p1a = Player4B("HenryA")
-	p3a = Player4B("PaulA")
+	p1a = Player1("HenryA")
+	p3a = Player1("PaulA")
 
-	p2a = Player4B("AlexA")
-	p4a = Player4B("SarahA")
+	p2a = Player1("AlexA")
+	p4a = Player1("SarahA")
 
 	team1Score = 0
-	team1tScore = 0
 	team1aScore = 0
 
 	numGames = 100#Number of games played
 	neededScore = 10#Number of points needed to win a game
 	printOutput = False#Whether or not each hand is printed in the console
 
-
 	for index in range(numGames):
 		randSeed = randrange(-10000,10000)
 
-		#gTest = Game([p1, p2, p3, p4])
-		#team1Score+=gTest.play_game(neededScore, randSeed, printOutput)
-
-		gTest2 = Game([p1t, p2t, p3t, p4t])
-		team1tScore+=gTest2.play_game(neededScore, randSeed, printOutput)
+		gTest = Game([p1, p2, p3, p4])
+		team1Score+=gTest.play_game(neededScore, randSeed, printOutput)
 
 		gControl = Game([p1a, p2a, p3a, p4a])
 		team1aScore+=gControl.play_game(neededScore, randSeed, printOutput)
 
-	#print "team 1 won ",team1Score," games out of ", numGames
-	print "team 1t won ",team1tScore," games out of ", numGames
+	print "team 1 won ",team1Score," games out of ", numGames
 	print "team 1a won ",team1aScore," games out of ", numGames

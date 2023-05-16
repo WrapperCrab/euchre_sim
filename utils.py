@@ -120,5 +120,11 @@ def findCardInCards(cards, value, suit):
 			return card
 	return None
 
+def hasCard(cards,cardValue,cardSuit):
+	card = findCardInCards(cards,cardValue,cardSuit)
+	if card!=None:
+		return True
+	return False
+
 
 

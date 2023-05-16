@@ -147,7 +147,10 @@ class Game:
 				discard = self._dealer.discard()
 				self._hands[self._dealer].remove(discard) # Game
 
+				goingAlone = False
+
 				if call_result == "alone":
+					goingAlone = True
 					#this is redundant
 					self._inactives.append(self._teammate_for(p))
 					self._teammate_for(p).active = False
@@ -163,11 +166,18 @@ class Game:
 
 				# tell players and game who called
 				self._caller = p
+				for player in self.playersOrder:
+					player.endCall1(True,self.get_player_position(p),goingAlone)
 				return
 			if printOutput:
 				print p.name, ":" , self._trump
 		if printOutput:
 			print "top card flipped over"
+
+		#let players know what happened
+		for player in self.playersOrder:
+			player.endCall1(False,None,None)
+
 		#second pass
 		for index in range(4):
 			p=self.playersOrder[index]
@@ -186,7 +196,9 @@ class Game:
 					raise IllegalPlayException("Can't call the face up card after it's flipped")
 				self._trump = call_result
 				self._caller = p
+				goingAlone = False
 				if call[1] == "alone":
+					goingAlone = True
 					#They went alone
 					#this is redundant
 					self._inactives.append(self._teammate_for(p))
@@ -201,6 +213,10 @@ class Game:
 					#The did not go alone
 					if printOutput:
 						print p.name, ":", self._trump
+
+				for player in self.playersOrder:
+					player.endCall2(self.get_player_position(p),goingAlone)
+
 				return
 
 	def score_hand(self):
@@ -224,6 +240,9 @@ class Game:
 		else:
 			#calling team lost
 			self._game_score[non_calling_team_num] += 2
+
+		for player in self.playersOrder:
+			player.endRound()
 
 	def print_hand(self):
 		""" Print hand for each player """
