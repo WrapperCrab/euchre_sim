@@ -17,16 +17,22 @@ if __name__ == "__main__":#This is where you decided which player gets what AI
 	#set local strategies
 	p1.callToLead = True
 	p3.callToLead = True
+	p1.shakeTheTree = True
+	p3.shakeTheTree = True
+	p1.splitTheTrump = True
+	p3.splitTheTrump = True
+	p1.voidAtLoss = True
+	p3.voidAtLoss = True
 
-	p2 = Player1("Alex")
-	p4 = Player1("Sarah")
+	p2 = Player2("Alex")
+	p4 = Player2("Sarah")
 
 	"Control Game"
-	p1a = Player1("HenryA")
-	p3a = Player1("PaulA")
+	p1a = Player2("HenryA")
+	p3a = Player2("PaulA")
 
-	p2a = Player1("AlexA")
-	p4a = Player1("SarahA")
+	p2a = Player2("AlexA")
+	p4a = Player2("SarahA")
 
 	team1Score = 0
 	team1aScore = 0
