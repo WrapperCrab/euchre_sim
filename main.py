@@ -3,6 +3,7 @@ from game import Game
 from player import Player
 from player1 import Player1
 from player2 import Player2
+from player3 import Player3
 
 from random import randrange
 
@@ -12,34 +13,28 @@ import copy
 
 if __name__ == "__main__":#This is where you decided which player gets what AI
 	"Test Game"
-	p1 = Player2("Henry")
-	p3 = Player2("Paul")
+	p1 = Player3("Henry")
+	p3 = Player3("Paul")
 	#set local strategies
-	p1.callToLead = True
-	p3.callToLead = True
-	p1.shakeTheTree = True
-	p3.shakeTheTree = True
-	p1.splitTheTrump = True
-	p3.splitTheTrump = True
-	p1.voidAtLoss = True
-	p3.voidAtLoss = True
+	p1.callPointsForVoidOff = True
+	p3.callPointsForVoidOff = True
 
-	p2 = Player2("Alex")
-	p4 = Player2("Sarah")
+	p2 = Player3("Alex")
+	p4 = Player3("Sarah")
 
 	"Control Game"
-	p1a = Player2("HenryA")
-	p3a = Player2("PaulA")
+	p1a = Player3("HenryA")
+	p3a = Player3("PaulA")
 
-	p2a = Player2("AlexA")
-	p4a = Player2("SarahA")
+	p2a = Player3("AlexA")
+	p4a = Player3("SarahA")
 
 	team1Score = 0
 	team1aScore = 0
 
-	numGames = 100#Number of games played
-	neededScore = 10#Number of points needed to win a game
-	printOutput = False#Whether or not each hand is printed in the console
+	numGames = 1#Number of games played
+	neededScore = 1#Number of points needed to win a game
+	printOutput = True#Whether or not each hand is printed in the console
 
 	for index in range(numGames):
 		randSeed = randrange(-10000,10000)

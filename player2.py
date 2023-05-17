@@ -3,10 +3,11 @@ from player1 import Player1
 
 class Player2(Player1):
 	#local strategy bools
-	callToLead = False
-	shakeTheTree = False
-	splitTheTrump = False
-	voidAtLoss = False
+	callToLead = True
+	shakeTheTree = True
+	splitTheTrump = True
+	voidAtLoss = True
+	voidAtStart = True
 
 
 	def action(self, trick, playersInTrick):
@@ -22,7 +23,7 @@ class Player2(Player1):
 		myHand = self.game.hand_for(self)
 
 		if self.callToLead:
-			if (len(myHand)==5)and(utils.hasCard(myHand,'J',trumpSuit))and(self.weCalled):
+			if (utils.hasCard(myHand,'J',trumpSuit))and(self.weCalled):#should keep track of what is best remaining card
 				card_to_play = 'J'+trumpSuit
 				return card_to_play
 
@@ -39,6 +40,14 @@ class Player2(Player1):
 				nonTrumpCards = utils.getCardsNotOfSuit(myHand,trumpSuit,trumpSuit)
 				if len(nonTrumpCards)!=0:
 					card_to_play = utils.best_card(nonTrumpCards,trumpSuit,None)
+					return card_to_play
+
+		if self.voidAtStart:
+			if (utils.hasSuit(myHand,trumpSuit,trumpSuit)):
+				#Try to void
+				cardsThatVoid = utils.getCardsThatVoid(myHand, trumpSuit)
+				if len(cardsThatVoid) > 0:
+					card_to_play = utils.worstCard(cardsThatVoid, trumpSuit, None)
 					return card_to_play
 
 		#base strategy
@@ -64,7 +73,6 @@ class Player2(Player1):
 					myPlaysThatWin.append(card)
 			if not myPlaysThatWin:  # We cannot win
 
-				#!!!This causes an error for some reason
 				if self.voidAtLoss:
 					if (len(myPlays) == len(myHand)) and (utils.hasSuit(myPlays,trumpSuit,trumpSuit)):
 						cardsThatVoid = utils.getCardsThatVoid(myHand,trumpSuit)
