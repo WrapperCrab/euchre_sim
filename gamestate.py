@@ -42,6 +42,8 @@ class Gamestate:
     def doMove(self,move):#move is a card
         hand = self.hands[self.nextPlayer]
         if move not in hand:
+            print(move)
+            print(self.nextPlayer)
             raise Exception("Move not in hand")
             return
         legalMoves = self.getLegalMoves()

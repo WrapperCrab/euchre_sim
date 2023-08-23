@@ -11,17 +11,42 @@ from random import randrange
 
 import copy
 
-def getWinningTeam(gamestate):
+def getWinningTeam(gamestate):#!!!deepcopy not working as intended, and workaround is failing.
+	print(gamestate.trick)
+
 	if gamestate.getWinner()!=None:
 		return gamestate.getWinner()
 	validMoves = gamestate.getLegalMoves()
 	teamToMove = gamestate.getTeamToMove()
+
 	for move in validMoves:
+		if len(validMoves) == 2 and teamToMove == "WE":
+			print("here")
 		#Create an independent copy of the gamestate
-		newGamestate = copy.deepcopy(gamestate)
+		# newGamestate = copy.deepcopy(gamestate)#!!!This does not do a true deepcopy. class variables are shared. Fucking why?
+		newGamestate = Gamestate(gamestate.score["NS"],gamestate.score["WE"],copy.deepcopy(gamestate.hands["Soud"]),copy.deepcopy(gamestate.hands["Wes"]),
+								 copy.deepcopy(gamestate.hands["Nora"]),copy.deepcopy(gamestate.hands["Ean"]),copy.deepcopy(gamestate.trick),
+								 copy.deepcopy(gamestate.playedCards),gamestate.nextPlayer,gamestate.trump)
+
 		newGamestate.doMove(move)
+		print(teamToMove)
+		print(len(validMoves))
+
+		if len(validMoves) == 2 and teamToMove == "WE":
+			print("here2")
+
 		if getWinningTeam(newGamestate)==teamToMove:
+			if len(validMoves) == 2 and teamToMove == "WE":
+				print("this should not have happened")
+			print("returning this team")
+			print(teamToMove)
 			return teamToMove
+		else:
+			if len(validMoves) == 2 and teamToMove == "WE":
+				print("about to continue")
+			continue
+	print("returning other team")
+	print(teamToMove)
 	return gamestate.getOtherTeam(teamToMove)
 
 def main():
