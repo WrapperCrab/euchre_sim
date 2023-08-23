@@ -56,7 +56,7 @@ class Gamestate:
             newIndex = (index+1)%4
             self.nextPlayer = self.players[newIndex]
         else:
-            #determine winner, update nextPlayer, update score, move trick to cardsPlayed
+            #determine winner, update nextPlayer, update score, move trick to playedCards
             ledSuit = utils.getCardSuit(self.trick[0],self.trump)
             winningMove = utils.best_card(self.trick,self.trump,ledSuit)
             winningMoveIndex = self.trick.index(winningMove)
@@ -68,7 +68,7 @@ class Gamestate:
             self.score[winningTeam]+=1
 
             for card in self.trick:
-                self.cardsPlayed.append(card)
+                self.playedCards.append(card)
             self.trick = []
 
     def getWinner(self):

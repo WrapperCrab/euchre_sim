@@ -11,17 +11,10 @@ from random import randrange
 
 import copy
 
-def main():
-	gamestate = Gamestate(2,1,["9s","Ah"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],[],[],"Soud","s")
-	print(get_winning_team(gamestate))
-
-if __name__== "__main__":
-	main()
-
 def getWinningTeam(gamestate):
 	if gamestate.getWinner()!=None:
 		return gamestate.getWinner()
-	validMoves = gamestate.getValidMoves()
+	validMoves = gamestate.getLegalMoves()
 	teamToMove = gamestate.getTeamToMove()
 	for move in validMoves:
 		#Create an independent copy of the gamestate
@@ -31,9 +24,16 @@ def getWinningTeam(gamestate):
 			return teamToMove
 	return gamestate.getOtherTeam(teamToMove)
 
+def main():
+	# gamestate = Gamestate(2,1,["9s","Ah"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],[],[],"Soud","s")
+	# gamestate = Gamestate(2,1,["Ah"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],["9s"],[],"Wes","s")
+	gamestate = Gamestate(2,1,["9s"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],["Ah"],[],"Wes","s")
+
+	print(getWinningTeam(gamestate))
 
 
-
+if __name__== "__main__":
+	main()
 
 # if __name__ == "__main__":#This is where you decided which player gets what AI
 # 	"Test Game"
