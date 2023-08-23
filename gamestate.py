@@ -1,9 +1,6 @@
 import utils
 
 #for now, gamestate only contains data for a single hand
-
-
-
 class Gamestate:
     players = ["Soud","Wes","Nora","Ean"]
     score = {"NS":0,"WE":0}
@@ -12,7 +9,6 @@ class Gamestate:
     trick = []
     nextPlayer = "Soud"
     trump = None
-
 
     def __init__(self,teamNSScore,teamWEScore,sHand,wHand,nHand,eHand,trick,playedCards,nextPlayer,trump):
         self.score["NS"] = teamNSScore
@@ -27,7 +23,7 @@ class Gamestate:
         self.nextPlayer = nextPlayer
         self.trump = trump
 
-    def get_legal_moves(self):
+    def getLegalMoves(self):
         hand = self.hands[self.nextPlayer]
         if len(self.trick)==0:
             return hand
@@ -43,12 +39,12 @@ class Gamestate:
                 return legalMoves
             return hand
 
-    def do_move(self,move):#move is a card
+    def doMove(self,move):#move is a card
         hand = self.hands[self.nextPlayer]
         if move not in hand:
             raise Exception("Move not in hand")
             return
-        legalMoves = self.get_legal_moves()
+        legalMoves = self.getLegalMoves()
         if move not in legalMoves:
             raise Exception("Move not legal")
             return
@@ -68,18 +64,28 @@ class Gamestate:
             winningPlayerIndex = (nextPlayerIndex+winningMoveIndex-3)%4
             winningPlayer = self.players[winningPlayerIndex]
             self.nextPlayer = winningPlayer
-            winningTeam = self.get_team_to_move()
+            winningTeam = self.getTeamToMove()
             self.score[winningTeam]+=1
 
             for card in self.trick:
                 self.cardsPlayed.append(card)
             self.trick = []
 
+    def getWinner(self):
+        if self.score["NS"]+self.score["WE"]==5:
+            if self.score["NS"]>self.score["WE"]:
+                return "NS"
+            return "WE"
+        return None
 
-
-
-    def get_team_to_move(self):
+    def getTeamToMove(self):#This function assumes no mistaken input
         if self.nextPlayer=="Soud" or self.nextPlayer=="Nora":
             return "NS"
         else:
             return "WE"
+
+    def getOtherTeam(self,team):#This function assumes no mistaken input
+        if team=="NS":
+            return "WE"
+        else:
+            return "NS"
