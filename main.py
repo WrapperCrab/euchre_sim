@@ -20,17 +20,17 @@ def getWinningTeam(gamestate):#!!!deepcopy not working as intended, and workarou
 	teamToMove = gamestate.getTeamToMove()
 
 	for move in validMoves:
-		if len(validMoves) == 2 and teamToMove == "WE":
-			print("here")
+		# if len(validMoves) == 2 and teamToMove == "WE":
+		# 	print("here")
+		print("start")
+		print(gamestate.getLegalMoves())
 		#Create an independent copy of the gamestate
-		# newGamestate = copy.deepcopy(gamestate)#!!!This does not do a true deepcopy. class variables are shared. Fucking why?
-		newGamestate = Gamestate(gamestate.score["NS"],gamestate.score["WE"],copy.deepcopy(gamestate.hands["Soud"]),copy.deepcopy(gamestate.hands["Wes"]),
-								 copy.deepcopy(gamestate.hands["Nora"]),copy.deepcopy(gamestate.hands["Ean"]),copy.deepcopy(gamestate.trick),
-								 copy.deepcopy(gamestate.playedCards),gamestate.nextPlayer,gamestate.trump)
-
+		newGamestate = copy.deepcopy(gamestate)#!!!This does not do a true deepcopy. class variables are shared. Fucking why?
+		# newGamestate = Gamestate(gamestate.score["NS"],gamestate.score["WE"],copy.deepcopy(gamestate.hands["Soud"]),copy.deepcopy(gamestate.hands["Wes"]),
+		# 						 copy.deepcopy(gamestate.hands["Nora"]),copy.deepcopy(gamestate.hands["Ean"]),copy.deepcopy(gamestate.trick),
+		# 						 copy.deepcopy(gamestate.playedCards),gamestate.nextPlayer,gamestate.trump)
 		newGamestate.doMove(move)
-		print(teamToMove)
-		print(len(validMoves))
+		print(gamestate.getLegalMoves())
 
 		if len(validMoves) == 2 and teamToMove == "WE":
 			print("here2")
@@ -54,7 +54,20 @@ def main():
 	# gamestate = Gamestate(2,1,["Ah"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],["9s"],[],"Wes","s")
 	gamestate = Gamestate(2,1,["9s"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],["Ah"],[],"Wes","s")
 
-	print(getWinningTeam(gamestate))
+	# print(getWinningTeam(gamestate))
+
+	print(gamestate.hands["Wes"])
+
+	newGamestate = copy.deepcopy(gamestate)
+	newGamestate.doMove("Qh")
+
+	print(id(gamestate.hands["Wes"]))#!!!These should not be the same id
+	print(id(newGamestate.hands["Wes"]))
+
+	print(id(gamestate.hands))
+	print(id(newGamestate.hands))
+
+	print(gamestate.hands["Wes"])#!!!This should not fucking change!
 
 
 if __name__== "__main__":
