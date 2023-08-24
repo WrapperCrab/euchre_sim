@@ -3,16 +3,19 @@ import utils
 #for now, gamestate only contains data for a single hand
 class Gamestate:
     players = ["Soud","Wes","Nora","Ean"]
-    score = {"NS":0,"WE":0}
-    hands = {"Soud": [],"Wes": [], "Nora": [], "Ean": []}
-    playedCards = []
-    trick = []
-    nextPlayer = "Soud"
-    trump = None
+    # score = {"NS":0,"WE":0}
+    # hands = {"Soud": [],"Wes": [], "Nora": [], "Ean": []}
+    # trick = []
+    # playedCards = []
+    # nextPlayer = "Soud"
+    # trump = None
 
     def __init__(self,teamNSScore,teamWEScore,sHand,wHand,nHand,eHand,trick,playedCards,nextPlayer,trump):
+        self.score = {"NS":0,"WE":0}
         self.score["NS"] = teamNSScore
         self.score["WE"] = teamWEScore
+
+        self.hands = {"Soud": [], "Wes": [], "Nora": [], "Ean": []}
         self.hands["Soud"] = sHand
         self.hands["Wes"] = wHand
         self.hands["Nora"] = nHand
@@ -42,8 +45,6 @@ class Gamestate:
     def doMove(self,move):#move is a card
         hand = self.hands[self.nextPlayer]
         if move not in hand:
-            print(move)
-            print(self.nextPlayer)
             raise Exception("Move not in hand")
             return
         legalMoves = self.getLegalMoves()
