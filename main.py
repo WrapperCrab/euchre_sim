@@ -1,17 +1,38 @@
 import utils
 from game import Game
-from gamestate import Gamestate
+
 import copy
 # from player import Player
 # from player1 import Player1
 # from player2 import Player2
 # from player3 import Player3
 
+import copy
+from random import shuffle
+from gamestate import Gamestate
+
 from random import randrange
 
-import copy
 
-def getWinningTeam(gamestate):#!!!deepcopy not working as intended, and workaround is failing.
+SUITS = ['s', 'h', 'd', 'c']
+VALUES = ['9', 'T', 'J', 'Q', 'K', 'A']
+
+def getRandomCards(deck,numCards):
+	newDeck = copy.copy(deck)
+	shuffle(newDeck)
+	cardsToReturn = []
+	for index in range(numCards):
+		cardsToReturn.append(newDeck.pop())
+	return cardsToReturn
+
+def getDeckMinusCards(cards):
+	#returns an array with the rest of the deck excluding cards
+	deck = [val + suit for val in VALUES for suit in SUITS]
+	for card in cards:
+		deck.remove(card)
+	return deck
+
+def getWinningTeam(gamestate):
 	if gamestate.getWinner()!=None:
 		return gamestate.getWinner()
 	validMoves = gamestate.getLegalMoves()
@@ -28,23 +49,30 @@ def getWinningTeam(gamestate):#!!!deepcopy not working as intended, and workarou
 	return gamestate.getOtherTeam(teamToMove)
 
 def main():
-	# gamestate = Gamestate(2,1,["9s","Ah"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],[],[],"Soud","s")
-	# gamestate = Gamestate(2,1,["Ah"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],["9s"],[],"Wes","s")
-	gamestate = Gamestate(2,1,["9s"],["Js","Qh"],["Tc","Qc"],["Qd","Jc"],["Ah"],[],"Wes","s")
-	print(getWinningTeam(gamestate))
+	aceWins = 0
+	nineWins = 0
 
-# def getDeepCopy(gamestate):
-# 	newPlayers = copy.copy(gamestate.players)
-# 	newScore = copy.copy(gamestate.score)
-# 	newHands = copy.deepcopy(gamestate.hands)
-# 	newPlayedCards = copy.copy(gamestate.playedCards)
-# 	newTrick = copy.copy(gamestate.trick)
-# 	newNextPlayer = gamestate.nextPlayer
-# 	newTrump = gamestate.trump
-#
-# 	newGameState = Gamestate(newScore["NS"],newScore["WE"],newHands["Soud"],newHands["Wes"],newHands["Nora"],newHands["Ean"],
-# 							 newTrick,newPlayedCards,newNextPlayer,newTrump)
-# 	return newGameState
+	remainingDeck = getDeckMinusCards(["9s","Ah"])
+	for i in range(100):#play the Ah
+		newCards = getRandomCards(remainingDeck,6)
+		wHand = newCards[:2]
+		nHand = newCards[2:4]
+		eHand = newCards[4:]
+		gamestate = Gamestate(2,1,["9s"],wHand,nHand,eHand,["Ah"],[],"Wes","s")
+		if getWinningTeam(gamestate)=="NS":
+			aceWins+=1
+	for i in range(100):#play the Ah
+		newCards = getRandomCards(remainingDeck,6)
+		wHand = newCards[:2]
+		nHand = newCards[2:4]
+		eHand = newCards[4:]
+		gamestate = Gamestate(2,1,["Ah"],wHand,nHand,eHand,["9s"],[],"Wes","s")
+		if getWinningTeam(gamestate)=="NS":
+			nineWins+=1
+
+	print("Ace of hearts won: " + str(aceWins) + " times")
+	print("9 of spades won: " + str(nineWins) + " times")
+
 
 if __name__== "__main__":
 	main()
